@@ -1,0 +1,15 @@
+observacao: 
+    string
+        todas as strings devem comecar e terminar com aspas duplas
+        pode conter o caracter '/'
+
+    numeros
+        inteiros regex [0..9]+
+        flutuante regex [0..9]+ . [0..9]*0
+
+    variaveis
+        ([a-z] | [A-Z]) ([a-z] | [A-Z] | [0-9])*
+
+    comentarios
+        unica linha: '//'
+        multiplas linhas '{...}'

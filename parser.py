@@ -39,3 +39,4 @@ if __name__ == '__main__':
     print(tokens)
 
     # tratar o token de acordo com o primeiro caractere identificado
+    # testando commit

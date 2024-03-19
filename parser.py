@@ -6,6 +6,10 @@ def main():
     args = parser.parse_args()
     return args.filename
 
+def printTokens(tokens):
+    for t in tokens:
+        print(t)
+
 if __name__ == '__main__':
 
     caracteres = ['+', '-', '*', '/', '(', ')', ';', ',', '.']
@@ -35,17 +39,28 @@ if __name__ == '__main__':
         print(f"linha: {linha}")
 
         if len(linha) == 1:
+            numeroLinha += 1
             continue
 
         # verifica se o primeiro caractere é uma letra ou espaço (REGRA)
         if linha[0].isalpha():
             aux.append(linha[0])
-            for i in range(1, len(linha)):
+            i = 1
+            while i < len(linha):
                 if linha[i].isalnum():
                     aux.append(linha[i])
-                elif linha[i] in caracteres:
-                    tokens.append(''.join(aux))               
+                elif linha[i] == '"':
+                    k = i + 1
+                    while(linha[k] != '"'):
+                        aux.append(linha[k])
+                        k += 1
+                    i = k
+                    tokens.append(''.join(aux))
                     aux = []
+                elif linha[i] in caracteres:
+                    if len(aux) > 0:
+                        tokens.append(''.join(aux))               
+                        aux = []
                     aux.append(linha[i])
                     tokens.append(''.join(aux))
                     aux = []
@@ -63,6 +78,10 @@ if __name__ == '__main__':
                     if len(aux) > 0:
                         tokens.append(''.join(aux))
                         aux = []
+                else:
+                    print(f"Erro na linha: {numeroLinha}, coluna: {i}")
+                    exit()
+                i += 1
         elif linha[0].isspace():
             # encontrar a primeira letra
             j = 1
@@ -71,12 +90,22 @@ if __name__ == '__main__':
             
             if linha[j].isalpha():
                 aux.append(linha[j])
-                for i in range(j + 1, len(linha)):
+                i = j + 1
+                while i != len(linha):
                     if linha[i].isalnum():
                         aux.append(linha[i])
-                    elif linha[i] in caracteres:
-                        tokens.append(''.join(aux))               
+                    elif linha[i] == '"':
+                        k = i + 1
+                        while(linha[k] != '"'):
+                            aux.append(linha[k])
+                            k += 1
+                        i = k
+                        tokens.append(''.join(aux))
                         aux = []
+                    elif linha[i] in caracteres:
+                        if len(aux) > 0:
+                            tokens.append(''.join(aux))               
+                            aux = []
                         aux.append(linha[i])
                         tokens.append(''.join(aux))
                         aux = []
@@ -94,6 +123,10 @@ if __name__ == '__main__':
                         if len(aux) > 0:
                             tokens.append(''.join(aux))
                             aux = []
+                    else:
+                        print(f"Erro na linha: {numeroLinha}, coluna: {i}")
+                        exit()
+                    i += 1
         elif linha[0:1] == '//':
             # comentário vai até o final da linha
             continue
@@ -107,6 +140,7 @@ if __name__ == '__main__':
         
         numeroLinha += 1
     
+    # printTokens(tokens)
     print(tokens)
 
     # tratar o token de acordo com o primeiro caractere identificado

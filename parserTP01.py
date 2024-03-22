@@ -151,17 +151,17 @@ if __name__ == '__main__':
                     var = ''.join(aux)
 
                     if isValid(var):
-                        value = ''
+                        value = None
                         for s in simbolos.keys():
                             if simbolos[s] == var:
-                                value = encontraKey(tipos_tokens, s)
+                                value = s
 
-                        if value == '' and isInt(var):
-                            value = 'tkn_numero_inteiro'
-                        elif value == '' and isFloat(var):
-                            value = 'tkn_numero_real'
-                        elif value == '' and isVariavel(var):
-                            value = 'tkn_variavel'
+                        if value == None and isInt(var):
+                            value = 42
+                        elif value == None and isFloat(var):
+                            value = 43
+                        elif value == None and isVariavel(var):
+                            value = 41
 
                         lexemas.append((value, var, numeroLinha, i - len(aux)))
                         aux = []
@@ -180,17 +180,17 @@ if __name__ == '__main__':
                         var = ''.join(aux)
 
                         if isValid(var):
-                            value = ''
+                            value = None
                             for s in simbolos.keys():
                                 if simbolos[s] == var:
-                                    value = encontraKey(tipos_tokens, s)
+                                    value = s
 
-                            if value == '' and isInt(var):
-                                value = 'tkn_numero_inteiro'
-                            elif value == '' and isFloat(var):
-                                value = 'tkn_numero_real'
-                            elif value == '' and isVariavel(var):
-                                value = 'tkn_variavel'
+                            if value == None and isInt(var):
+                                value = 42
+                            elif value == None and isFloat(var):
+                                value = 43
+                            elif value == None and isVariavel(var):
+                                value = 41
 
                             lexemas.append((value, var, numeroLinha, i - len(aux)))
                             aux = []
@@ -200,17 +200,17 @@ if __name__ == '__main__':
                             exit()
                     aux.append(linha[i])
                     var = ''.join(aux)
-                    value = ''
+                    value = None
                     for s in simbolos.keys():
                         if simbolos[s] == var:
-                            value = encontraKey(tipos_tokens, s)
+                            value = s
 
-                    if value == '' and isInt(var):
-                        value = 'tkn_numero_inteiro'
-                    elif value == '' and isFloat(var):
-                        value = 'tkn_numero_real'
-                    elif value == '' and isVariavel(var):
-                        value = 'tkn_variavel'
+                    if value == None and isInt(var):
+                        value = 42
+                    elif value == None and isFloat(var):
+                        value = 43
+                    elif value == None and isVariavel(var):
+                        value = 41
 
                     lexemas.append((value, var, numeroLinha, i))
                     aux = []
@@ -219,17 +219,17 @@ if __name__ == '__main__':
                     var = ''.join(aux)
 
                     if isValid(var):
-                        value = ''
+                        value = None
                         for s in simbolos.keys():
                             if simbolos[s] == var:
-                                value = encontraKey(tipos_tokens, s)
+                                value = s
 
-                        if value == '' and isInt(var):
-                            value = 'tkn_numero_inteiro'
-                        elif value == '' and isFloat(var):
-                            value = 'tkn_numero_real'
-                        elif value == '' and isVariavel(var):
-                            value = 'tkn_variavel'
+                        if value == None and isInt(var):
+                            value = 42
+                        elif value == None and isFloat(var):
+                            value = 43
+                        elif value == None and isVariavel(var):
+                            value = 41
 
                         lexemas.append((value, var, numeroLinha, i - len(aux)))
                         aux = []
@@ -242,34 +242,34 @@ if __name__ == '__main__':
                 if d in duplas:
                     aux.append(linha[i:i+2])
                     var = ''.join(aux)
-                    value = ''
+                    value = None
                     for s in simbolos.keys():
                         if simbolos[s] == var:
-                            value = encontraKey(tipos_tokens, s)
+                            value = s
 
-                    if value == '' and isInt(var):
-                        value = 'tkn_numero_inteiro'
-                    elif value == '' and isFloat(var):
-                        value = 'tkn_numero_real'
-                    elif value == '' and isVariavel(var):
-                            value = 'tkn_variavel'
+                    if value == None and isInt(var):
+                        value = 42
+                    elif value == None and isFloat(var):
+                        value = 43
+                    elif value == None and isVariavel(var):
+                        value = 41
 
                     lexemas.append((value, var, numeroLinha, i))
                     i += 1
                 else:
                     aux.append(linha[i])
                     var = ''.join(aux)
-                    value = ''
+                    value = None
                     for s in simbolos.keys():
                         if simbolos[s] == var:
-                            value = encontraKey(tipos_tokens, s)
+                            value = s
 
-                    if value == '' and isInt(var):
-                        value = 'tkn_numero_inteiro'
-                    elif value == '' and isFloat(var):
-                        value = 'tkn_numero_real'
-                    elif value == '' and isVariavel(var):
-                            value = 'tkn_variavel'
+                    if value == None and isInt(var):
+                        value = 42
+                    elif value == None and isFloat(var):
+                        value = 43
+                    elif value == None and isVariavel(var):
+                        value = 41
 
                     lexemas.append((value, var, numeroLinha, i))
                 aux = []
@@ -289,7 +289,7 @@ if __name__ == '__main__':
                             exit()
                 i = k
                 var = ''.join(aux)
-                value = 'tkn_string'
+                value = 44
                 lexemas.append((value, var, numeroLinha, i - len(aux)))
                 aux = []
             elif linha[i] == '{':
@@ -314,8 +314,3 @@ if __name__ == '__main__':
         numeroLinha += 1
 
     printLexemas(lexemas)
-    # print(lexemas)
-
-    # numero com letras - ok
-    # string que nao fecha - ok
-    # comentario que nao fecha -> comentario com chaves - ok

@@ -198,22 +198,22 @@ if __name__ == '__main__':
                             print(
                                 f"Erro na linha: {numeroLinha}, coluna: {i - len(aux)}\nLexema inválido: {var}")
                             exit()
-                        aux.append(linha[i])
-                        var = ''.join(aux)
-                        value = ''
-                        for s in simbolos.keys():
-                            if simbolos[s] == var:
-                                value = encontraKey(tipos_tokens, s)
+                    aux.append(linha[i])
+                    var = ''.join(aux)
+                    value = ''
+                    for s in simbolos.keys():
+                        if simbolos[s] == var:
+                            value = encontraKey(tipos_tokens, s)
 
-                        if value == '' and isInt(var):
-                            value = 'tkn_numero_inteiro'
-                        elif value == '' and isFloat(var):
-                            value = 'tkn_numero_real'
-                        elif value == '' and isVariavel(var):
-                            value = 'tkn_variavel'
+                    if value == '' and isInt(var):
+                        value = 'tkn_numero_inteiro'
+                    elif value == '' and isFloat(var):
+                        value = 'tkn_numero_real'
+                    elif value == '' and isVariavel(var):
+                        value = 'tkn_variavel'
 
-                        lexemas.append((value, var, numeroLinha, i))
-                        aux = []
+                    lexemas.append((value, var, numeroLinha, i))
+                    aux = []
             elif linha[i] in caracteresEspeciais:
                 if len(aux) > 0:
                     var = ''.join(aux)

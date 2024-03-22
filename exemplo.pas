@@ -1,6 +1,6 @@
 // ignorar esta linha
 
-program exemplo;
+9. program exemplo;
 
 var op1, op2, op3:integer;
 var num:=6789.1234, num2:=2307

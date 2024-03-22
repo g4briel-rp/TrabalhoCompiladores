@@ -1,26 +1,83 @@
 import argparse
 
+
 def main():
     parser = argparse.ArgumentParser(description='Compiler')
     parser.add_argument('filename', help='Path to the file to be compiled')
     args = parser.parse_args()
     return args.filename
 
+
 def printLexemas(lexemas):
     for t in lexemas:
         print(t)
+
+
+def encontraKey(simbolos, value):
+    for chave, val in simbolos.items():
+        if val == value:
+            return chave
+    return None
+
+
+def isFloat(aux):
+    return aux.replace('.', '', 1).isdigit()
+
 
 if __name__ == '__main__':
 
     caracteres = ['+', '-', '*', '/', '(', ')', ';', ',', '.']
     caracteresEspeciais = ['=', '<', '>', ':']
-    duplas = ['<=', '>=', ':=', '==', '<>']    
+    duplas = ['<=', '>=', ':=', '==', '<>']
 
-    tipos = {
+    simbolos = {
+        1: '+',
+        2: '-',
+        3: '*',
+        4: '/',
+        5: 'mod',
+        6: 'div',
+        7: 'or',
+        8: 'and',
+        9: 'not',
+        10: '==',
+        11: '<>',
+        12: '>',
+        13: '>=',
+        14: '<',
+        15: '<=',
+        16: ':=',
+        17: 'program',
+        18: 'var',
+        19: 'integer',
+        20: 'real',
+        21: 'string',
+        22: 'begin',
+        23: 'end',
+        24: 'for',
+        25: 'to',
+        26: 'while',
+        27: 'do',
+        28: 'break',
+        29: 'continue',
+        30: 'if',
+        31: 'else',
+        32: 'then',
+        33: 'read',
+        34: 'write',
+        35: ';',
+        36: ',',
+        37: '.',
+        38: ':',
+        39: '(',
+        40: ')',
+    }
+
+    tipos_tokens = {
         'tkn_add': 1,
         'tkn_sub': 2,
         'tkn_mult': 3,
-        'tkn_div': 4,
+        'tkn_divisao': 4,
         'tkn_mod': 5,
         'tkn_div': 6,
         'tkn_or': 7,
@@ -79,51 +136,125 @@ if __name__ == '__main__':
                 aux.append(linha[i])
             elif linha[i].isspace():
                 if len(aux) > 0:
-                    lexemas.append((''.join(aux), numeroLinha, i - len(aux)))
+                    var = ''.join(aux)
+                    value = ''
+                    for s in simbolos.keys():
+                        if simbolos[s] == var:
+                            value = encontraKey(tipos_tokens, s)
+
+                    if value == '' and isFloat(var):
+                        value = 'tkn_real'
+
+                    lexemas.append(
+                        (value, ''.join(aux), numeroLinha, i - len(aux)))
                     aux = []
                     # subir o while para encontrar a primeiro caractere
             elif linha[i] in caracteres:
-                if len(aux) > 0:
-                    lexemas.append((''.join(aux), numeroLinha, i - len(aux)))           
+                if linha[i:i+2] == '//':
+                    linha = arquivo.readline()
+                    numeroLinha += 1
+                elif linha[i] == '.' and ''.join(aux).isnumeric():
+                    aux.append(linha[i])
+                else:
+                    if len(aux) > 0:
+                        var = ''.join(aux)
+                        value = ''
+                        for s in simbolos.keys():
+                            if simbolos[s] == var:
+                                value = encontraKey(tipos_tokens, s)
+
+                        if value == '' and isFloat(var):
+                            value = 'tkn_real'
+
+                        lexemas.append(
+                            (value, ''.join(aux), numeroLinha, i - len(aux)))
+                        aux = []
+                    aux.append(linha[i])
+                    var = ''.join(aux)
+                    value = ''
+                    for s in simbolos.keys():
+                        if simbolos[s] == var:
+                            value = encontraKey(tipos_tokens, s)
+
+                    if value == '' and isFloat(var):
+                        value = 'tkn_real'
+
+                    lexemas.append((value, ''.join(aux), numeroLinha, i))
                     aux = []
-                aux.append(linha[i])
-                lexemas.append((''.join(aux), numeroLinha, i))
-                aux = []
             elif linha[i] in caracteresEspeciais:
                 if len(aux) > 0:
-                    lexemas.append((''.join(aux), numeroLinha, i - len(aux)))         
+                    var = ''.join(aux)
+                    value = ''
+                    for s in simbolos.keys():
+                        if simbolos[s] == var:
+                            value = encontraKey(tipos_tokens, s)
+
+                    if value == '' and isFloat(var):
+                        value = 'tkn_real'
+
+                    lexemas.append(
+                        (value, ''.join(aux), numeroLinha, i - len(aux)))
                     aux = []
-                
+
                 d = (''.join(linha[i:i+2]))
                 if d in duplas:
                     aux.append(linha[i:i+2])
-                    lexemas.append((''.join(aux), numeroLinha, i))
+                    var = ''.join(aux)
+                    value = ''
+                    for s in simbolos.keys():
+                        if simbolos[s] == var:
+                            value = encontraKey(tipos_tokens, s)
+
+                    if value == '' and isFloat(var):
+                        value = 'tkn_real'
+
+                    lexemas.append((value, ''.join(aux), numeroLinha, i))
                     i += 1
                 else:
                     aux.append(linha[i])
-                    lexemas.append((''.join(aux), numeroLinha, i))
+                    var = ''.join(aux)
+                    value = ''
+                    for s in simbolos.keys():
+                        if simbolos[s] == var:
+                            value = encontraKey(tipos_tokens, s)
+
+                    if value == '' and isFloat(var):
+                        value = 'tkn_real'
+
+                    lexemas.append((value, ''.join(aux), numeroLinha, i))
                 aux = []
             elif linha[i] == '"':
                 k = i + 1
-                while(linha[k] != '"'):
+                while (linha[k] != '"'):
                     aux.append(linha[k])
                     k += 1
 
                     if k == (len(linha) - 1):
                         linha = arquivo.readline()
                         numeroLinha += 1
-                        k = 0 
+                        k = 0
                         if not linha:
-                            print(f"Chegou ao final do arquivo sem fechar as aspas na linha: {numeroLinha}, coluna: {k}")
-                            break    
+                            print(
+                                f"Chegou ao final do arquivo sem fechar as aspas na linha: {numeroLinha}, coluna: {k}")
+                            break
                 i = k
-                lexemas.append((''.join(aux), numeroLinha, i - len(aux)))
+                var = ''.join(aux)
+                value = ''
+                for s in simbolos.keys():
+                    if simbolos[s] == var:
+                        value = encontraKey(tipos_tokens, s)
+
+                if value == '' and isFloat(var):
+                    value = 'tkn_real'
+
+                lexemas.append(
+                    (value, ''.join(aux), numeroLinha, i - len(aux)))
                 aux = []
             else:
                 print(f"Erro na linha: {numeroLinha}, coluna: {i}")
                 exit()
             i += 1
         numeroLinha += 1
-    
+
     printLexemas(lexemas)
     # print(lexemas)

@@ -1,6 +1,9 @@
+// ignorar esta linha
+
 program exemplo;
 
 var op1, op2, op3:integer;
+var num:=6789.1234
 begin
     write("Digite o n1.\n");
     read(op1);
@@ -12,10 +15,10 @@ begin
     
     if op3<>1 then
     begin
-        write("a soma eh",op1+op2);
+        write("a soma eh",op1/op2);
     end;
     if op3=2 then
     begin
-        write("a sub eh",op1-op2);
+        write("a sub eh",op1/op2);
     end;
 end.

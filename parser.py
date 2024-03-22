@@ -1,17 +1,14 @@
 import argparse
 
-
 def main():
     parser = argparse.ArgumentParser(description='Compiler')
     parser.add_argument('filename', help='Path to the file to be compiled')
     args = parser.parse_args()
     return args.filename
 
-
 def printLexemas(lexemas):
     for t in lexemas:
         print(t)
-
 
 def encontraKey(simbolos, value):
     for chave, val in simbolos.items():
@@ -19,16 +16,27 @@ def encontraKey(simbolos, value):
             return chave
     return None
 
+def isVariavel(aux):
+    return aux.isalnum()
+
+def isInt(aux):
+    return aux.isdigit()
 
 def isFloat(aux):
     return aux.replace('.', '', 1).isdigit()
 
+def isValid(aux):
+    if aux[0].isdigit():
+        for i in range(1, len(aux)):
+            if aux[i].isalpha():
+                return False
+    return True
 
 if __name__ == '__main__':
 
     caracteres = ['+', '-', '*', '/', '(', ')', ';', ',', '.']
     caracteresEspeciais = ['=', '<', '>', ':']
-    duplas = ['<=', '>=', ':=', '==', '<>']
+    duplas = ['<=', '>=', ':=', '<>']
 
     simbolos = {
         1: '+',
@@ -40,7 +48,7 @@ if __name__ == '__main__':
         7: 'or',
         8: 'and',
         9: 'not',
-        10: '==',
+        10: '=',
         11: '<>',
         12: '>',
         13: '>=',
@@ -114,6 +122,10 @@ if __name__ == '__main__':
         'tkn_dois_pontos': 38,
         'tkn_abre_parenteses': 39,
         'tkn_fecha_parenteses': 40,
+        'tkn_variavel': 41,
+        'tkn_numero_inteiro': 42,
+        'tkn_numero_real': 43,
+        'tkn_string': 44,
     }
 
     numeroLinha = 1
@@ -137,18 +149,26 @@ if __name__ == '__main__':
             elif linha[i].isspace():
                 if len(aux) > 0:
                     var = ''.join(aux)
-                    value = ''
-                    for s in simbolos.keys():
-                        if simbolos[s] == var:
-                            value = encontraKey(tipos_tokens, s)
 
-                    if value == '' and isFloat(var):
-                        value = 'tkn_real'
+                    if isValid(var):
+                        value = ''
+                        for s in simbolos.keys():
+                            if simbolos[s] == var:
+                                value = encontraKey(tipos_tokens, s)
 
-                    lexemas.append(
-                        (value, ''.join(aux), numeroLinha, i - len(aux)))
-                    aux = []
-                    # subir o while para encontrar a primeiro caractere
+                        if value == '' and isInt(var):
+                            value = 'tkn_numero_inteiro'
+                        elif value == '' and isFloat(var):
+                            value = 'tkn_numero_real'
+                        elif value == '' and isVariavel(var):
+                            value = 'tkn_variavel'
+
+                        lexemas.append((value, var, numeroLinha, i - len(aux)))
+                        aux = []
+                    else:
+                        print(
+                            f"Erro na linha: {numeroLinha}, coluna: {i - len(aux)}\nLexema inválido: {var}")
+                        exit()
             elif linha[i] in caracteres:
                 if linha[i:i+2] == '//':
                     linha = arquivo.readline()
@@ -158,43 +178,65 @@ if __name__ == '__main__':
                 else:
                     if len(aux) > 0:
                         var = ''.join(aux)
+
+                        if isValid(var):
+                            value = ''
+                            for s in simbolos.keys():
+                                if simbolos[s] == var:
+                                    value = encontraKey(tipos_tokens, s)
+
+                            if value == '' and isInt(var):
+                                value = 'tkn_numero_inteiro'
+                            elif value == '' and isFloat(var):
+                                value = 'tkn_numero_real'
+                            elif value == '' and isVariavel(var):
+                                value = 'tkn_variavel'
+
+                            lexemas.append((value, var, numeroLinha, i - len(aux)))
+                            aux = []
+                        else:
+                            print(
+                                f"Erro na linha: {numeroLinha}, coluna: {i - len(aux)}\nLexema inválido: {var}")
+                            exit()
+                        aux.append(linha[i])
+                        var = ''.join(aux)
                         value = ''
                         for s in simbolos.keys():
                             if simbolos[s] == var:
                                 value = encontraKey(tipos_tokens, s)
 
-                        if value == '' and isFloat(var):
-                            value = 'tkn_real'
+                        if value == '' and isInt(var):
+                            value = 'tkn_numero_inteiro'
+                        elif value == '' and isFloat(var):
+                            value = 'tkn_numero_real'
+                        elif value == '' and isVariavel(var):
+                            value = 'tkn_variavel'
 
-                        lexemas.append(
-                            (value, ''.join(aux), numeroLinha, i - len(aux)))
+                        lexemas.append((value, var, numeroLinha, i))
                         aux = []
-                    aux.append(linha[i])
-                    var = ''.join(aux)
-                    value = ''
-                    for s in simbolos.keys():
-                        if simbolos[s] == var:
-                            value = encontraKey(tipos_tokens, s)
-
-                    if value == '' and isFloat(var):
-                        value = 'tkn_real'
-
-                    lexemas.append((value, ''.join(aux), numeroLinha, i))
-                    aux = []
             elif linha[i] in caracteresEspeciais:
                 if len(aux) > 0:
                     var = ''.join(aux)
-                    value = ''
-                    for s in simbolos.keys():
-                        if simbolos[s] == var:
-                            value = encontraKey(tipos_tokens, s)
 
-                    if value == '' and isFloat(var):
-                        value = 'tkn_real'
+                    if isValid(var):
+                        value = ''
+                        for s in simbolos.keys():
+                            if simbolos[s] == var:
+                                value = encontraKey(tipos_tokens, s)
 
-                    lexemas.append(
-                        (value, ''.join(aux), numeroLinha, i - len(aux)))
-                    aux = []
+                        if value == '' and isInt(var):
+                            value = 'tkn_numero_inteiro'
+                        elif value == '' and isFloat(var):
+                            value = 'tkn_numero_real'
+                        elif value == '' and isVariavel(var):
+                            value = 'tkn_variavel'
+
+                        lexemas.append((value, var, numeroLinha, i - len(aux)))
+                        aux = []
+                    else:
+                        print(
+                            f"Erro na linha: {numeroLinha}, coluna: {i - len(aux)}\nLexema inválido: {var}")
+                        exit()
 
                 d = (''.join(linha[i:i+2]))
                 if d in duplas:
@@ -205,10 +247,14 @@ if __name__ == '__main__':
                         if simbolos[s] == var:
                             value = encontraKey(tipos_tokens, s)
 
-                    if value == '' and isFloat(var):
-                        value = 'tkn_real'
+                    if value == '' and isInt(var):
+                        value = 'tkn_numero_inteiro'
+                    elif value == '' and isFloat(var):
+                        value = 'tkn_numero_real'
+                    elif value == '' and isVariavel(var):
+                            value = 'tkn_variavel'
 
-                    lexemas.append((value, ''.join(aux), numeroLinha, i))
+                    lexemas.append((value, var, numeroLinha, i))
                     i += 1
                 else:
                     aux.append(linha[i])
@@ -218,10 +264,14 @@ if __name__ == '__main__':
                         if simbolos[s] == var:
                             value = encontraKey(tipos_tokens, s)
 
-                    if value == '' and isFloat(var):
-                        value = 'tkn_real'
+                    if value == '' and isInt(var):
+                        value = 'tkn_numero_inteiro'
+                    elif value == '' and isFloat(var):
+                        value = 'tkn_numero_real'
+                    elif value == '' and isVariavel(var):
+                            value = 'tkn_variavel'
 
-                    lexemas.append((value, ''.join(aux), numeroLinha, i))
+                    lexemas.append((value, var, numeroLinha, i))
                 aux = []
             elif linha[i] == '"':
                 k = i + 1
@@ -235,26 +285,37 @@ if __name__ == '__main__':
                         k = 0
                         if not linha:
                             print(
-                                f"Chegou ao final do arquivo sem fechar as aspas na linha: {numeroLinha}, coluna: {k}")
-                            break
+                                f"Chegou ao final do arquivo sem fechar as aspas, na linha: {numeroLinha}, coluna: {k}")
+                            exit()
                 i = k
                 var = ''.join(aux)
-                value = ''
-                for s in simbolos.keys():
-                    if simbolos[s] == var:
-                        value = encontraKey(tipos_tokens, s)
-
-                if value == '' and isFloat(var):
-                    value = 'tkn_real'
-
-                lexemas.append(
-                    (value, ''.join(aux), numeroLinha, i - len(aux)))
+                value = 'tkn_string'
+                lexemas.append((value, var, numeroLinha, i - len(aux)))
                 aux = []
+            elif linha[i] == '{':
+
+                k = i + 1
+                while (linha[k] != '}'):
+                    k += 1
+                    if k == (len(linha)):
+                        linha = arquivo.readline()
+                        numeroLinha += 1
+                        k = 0
+                        if not linha:
+                            print(
+                                f"Chegou ao final do arquivo sem fechar as chaves, na linha: {numeroLinha}, coluna: {k}")
+                            exit()
+                i = k
             else:
-                print(f"Erro na linha: {numeroLinha}, coluna: {i}")
+                print(
+                    f"Erro na linha: {numeroLinha}, coluna: {i}\nCaractere inválido: {linha[i]}")
                 exit()
             i += 1
         numeroLinha += 1
 
     printLexemas(lexemas)
     # print(lexemas)
+
+    # numero com letras - ok
+    # string que nao fecha - ok
+    # comentario que nao fecha -> comentario com chaves - ok

@@ -42,7 +42,7 @@ def isValid(aux):
 
 def erroLexema(numeroLinha, i, aux, var):
     print(
-        f"Erro na linha: {numeroLinha}, coluna: {i - len(aux)}\nLexema inválido: {var}")
+        f"Erro na linha: {numeroLinha}, coluna: {(i - len(aux) + 1)}\nLexema inválido: {var}")
     exit()
 
 if __name__ == '__main__':
@@ -114,7 +114,7 @@ if __name__ == '__main__':
                     if isValid(var):
                         value = None
                         value = classifica(simbolos, var, value)
-                        lexemas.append((value, var, numeroLinha, i - len(aux)))
+                        lexemas.append((value, var, numeroLinha, (i - len(aux) + 1)))
                         aux = []
                     else:
                        erroLexema(numeroLinha, i, aux, var)
@@ -130,7 +130,7 @@ if __name__ == '__main__':
                         if isValid(var):
                             value = None
                             value = classifica(simbolos, var, value)
-                            lexemas.append((value, var, numeroLinha, i - len(aux)))
+                            lexemas.append((value, var, numeroLinha, (i - len(aux) + 1)))
                             aux = []
                         else:
                             erroLexema(numeroLinha, i, aux, var)
@@ -138,7 +138,7 @@ if __name__ == '__main__':
                     var = ''.join(aux)
                     value = None
                     value = classifica(simbolos, var, value)
-                    lexemas.append((value, var, numeroLinha, i))
+                    lexemas.append((value, var, numeroLinha, i + 1))
                     aux = []
             elif linha[i] in caracteresEspeciais:
                 if len(aux) > 0:
@@ -146,7 +146,7 @@ if __name__ == '__main__':
                     if isValid(var):
                         value = None
                         value = classifica(simbolos, var, value)
-                        lexemas.append((value, var, numeroLinha, i - len(aux)))
+                        lexemas.append((value, var, numeroLinha, (i - len(aux) + 1)))
                         aux = []
                     else:
                        erroLexema(numeroLinha, i, aux, var)
@@ -156,14 +156,14 @@ if __name__ == '__main__':
                     var = ''.join(aux)
                     value = None
                     value = classifica(simbolos, var, value)
-                    lexemas.append((value, var, numeroLinha, i))
+                    lexemas.append((value, var, numeroLinha, i + 1))
                     i += 1
                 else:
                     aux.append(linha[i])
                     var = ''.join(aux)
                     value = None
                     value = classifica(simbolos, var, value)
-                    lexemas.append((value, var, numeroLinha, i))
+                    lexemas.append((value, var, numeroLinha, i + 1))
                 aux = []
             elif linha[i] == '"':
                 k = i + 1
@@ -181,7 +181,7 @@ if __name__ == '__main__':
                 i = k
                 var = ''.join(aux)
                 value = 44
-                lexemas.append((value, var, numeroLinha, i - len(aux)))
+                lexemas.append((value, var, numeroLinha, (i - len(aux) + 1)))
                 aux = []
             elif linha[i] == '{':
                 k = i + 1

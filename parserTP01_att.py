@@ -48,7 +48,6 @@ def erroLexema(numeroLinha, i, aux, var):
     exit()
 
 def executar():
-
     caracteres = ['+', '-', '*', '/', '(', ')', ';', ',', '.']
     caracteresEspeciais = ['=', '<', '>', ':']
     duplas = ['<=', '>=', ':=', '<>']
@@ -226,5 +225,8 @@ def executar():
                 exit()
             i += 1
         numeroLinha += 1
-    # printLexemas(lexemas)
+    # imprime(lexemas)
     return lexemas
+
+if __name__ == '__main__':
+    executar()

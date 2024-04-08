@@ -22,7 +22,7 @@ def classifica(simbolos, var, value):
 
     return value
 
-def printLexemas(lexemas):
+def imprime(lexemas):
     for t in lexemas:
         print(t)
 
@@ -47,7 +47,7 @@ def erroLexema(numeroLinha, i, aux, var):
         f"Erro na linha: {numeroLinha}, coluna: {(i - len(aux) + 1)}\nLexema inválido: {var}")
     exit()
 
-if __name__ == '__main__':
+def executar():
 
     caracteres = ['+', '-', '*', '/', '(', ')', ';', ',', '.']
     caracteresEspeciais = ['=', '<', '>', ':']
@@ -143,7 +143,6 @@ if __name__ == '__main__':
                             value = classifica(simbolos, var, value)
                             # print('valor da classificação: ',value)
                             if value == 43 and var[len(var)-1] == '.':
-                                print("entrou no .0")
                                 var += 0
                             lexemas.append((value, var, numeroLinha, (i - len(aux) + 1)))
                             aux = []
@@ -198,7 +197,12 @@ if __name__ == '__main__':
                 i = k
                 var = ''.join(aux)
                 value = 44
-                var = re.sub(r'\\n', '\n', var)
+
+                if '\\n' in var:
+                    var = re.sub(r'\\n', '\n', var)
+                elif '\\t' in var:
+                    var = re.sub(r'\\t', '    ', var)
+                
                 lexemas.append((value, var, numeroLinha, (i - len(aux) + 1)))
                 aux = []
             elif linha[i] == '{':
@@ -222,4 +226,5 @@ if __name__ == '__main__':
                 exit()
             i += 1
         numeroLinha += 1
-    printLexemas(lexemas)
+    # printLexemas(lexemas)
+    return lexemas

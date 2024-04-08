@@ -1,6 +1,6 @@
 // ignorar esta linha
 
-9. program exemplo;
+program exemplo;
 
 var op1, op2, op3:integer;
 var num:=6789.1234, num2:=2307
@@ -10,7 +10,7 @@ begin
     write("Digite o n2.\n");
     read(op2);
     
-    write("Digite 1 para soma, 2 para subtracao.\n");
+    write("Digite 1 para soma, 2 para subtracao.\");
     read(op3);
     
     if op3<>1 then

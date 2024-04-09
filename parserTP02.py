@@ -16,7 +16,7 @@ tipos_tokens = {
     'tkn_maior_igual': 13,
     'tkn_menor': 14,
     'tkn_menor_igual': 15,
-    'tkn_atrib': 16,
+    'tkn_atribuicao': 16,
     'tkn_program': 17,
     'tkn_var': 18,
     'tkn_integer': 19,
@@ -121,8 +121,7 @@ class maquina:
             self.consome('tkn_string')
     
     def restoDeclaration(self):
-        if self.getType == 18:
-            self.consome('tkn_var')
+        if self.getType() == 41:
             self.declaration()
             self.restoDeclaration()
     
@@ -130,29 +129,160 @@ class maquina:
         self.stmt()
 
     def stmt(self):
-        if self.getType() == 24:
+        if self.getType() == tipos_tokens['tkn_for']:
             self.forStmt()
-        elif self.getType() == 33 or self.getType() == 34:
-            self.ioStmt()
-        elif self.getType() == 26:
-            self.whileStmt()
-        elif self.getType() == 16:
-            self.atribStmt()
-            self.consome('tkn_ponto_virgula')
-        elif self.getType() == 30:
-            self.ifStmt()
-        elif self.getType() == 22:
-            self.bloco()
-        elif self.getType() == 28:
-            self.consome('tkn_break')
-            self.consome('tkn_ponto_virgula')
-        elif self.getType() == 29:
-            self.consome('tkn_continue')
-            self.consome('tkn_ponto_virgula')
-        elif self.getType() == 35:
-            self.consome('tkn_ponto_virgula')
+        # elif self.getType() == 33 or self.getType() == 34:
+        #     self.ioStmt()
+        # elif self.getType() == 26:
+        #     self.whileStmt()
+        # elif self.getType() == 16:
+        #     self.atribStmt()
+        #     self.consome('tkn_ponto_virgula')
+        # elif self.getType() == 30:
+        #     self.ifStmt()
+        # elif self.getType() == 22:
+        #     self.bloco()
+        # elif self.getType() == 28:
+        #     self.consome('tkn_break')
+        #     self.consome('tkn_ponto_virgula')
+        # elif self.getType() == 29:
+        #     self.consome('tkn_continue')
+        #     self.consome('tkn_ponto_virgula')
+        # elif self.getType() == 35:
+        #     self.consome('tkn_ponto_virgula')
+        
+    def forStmt(self):
+        self.consome('tkn_for')
+        self.atrib()
+        self.consome('tkn_to')
+        self.endFor()
+        self.consome('tkn_do')
+        self.stmt()
 
-# paramos na descrição das instruções linha 31 do miniPascal.gmr
+    def endFor(self):
+        if self.getType() == 41:
+            self.consome('tkn_variavel')
+        elif self.getType() == 42:
+            self.consome('tkn_numero_inteiro')
+
+    def atrib(self):
+        self.consome('tkn_variavel')
+        self.consome('tkn_atribuicao')
+        self.expr()
+
+    def expr(self):
+        self.operationOR()
+
+    def operationOR(self):
+        self.operationAND()
+        self.restOperationOR()
+
+    def restOperationOR(self):
+        if self.getType() == 7:
+            self.consome('tkn_or')
+            self.operationAND()
+            self.restOperationOR()
+    
+    def operationAND(self):
+        self.operationNOT()
+        self.restOperationAND()
+
+    def restOperationAND(self):
+        if self.getType() == 8:
+            self.consome('tkn_and')
+            self.operationNOT()
+            self.restOperationAND()
+
+    def operationNOT(self):
+        if self.getType() == 9:
+            self.consome('tkn_not')
+            self.operationNOT()
+        else:
+            self.rel()
+
+    def rel(self):
+        self.operationADD()
+        self.restRel()
+
+    def restRel(self):
+        if self.getType() == 10:
+            self.consome('tkn_igual')
+            self.operationADD()
+        elif self.getType() == 11:
+            self.consome('tkn_dif')
+            self.operationADD()
+        elif self.getType() == 14:
+            self.consome('tkn_menor')
+            self.operationADD()
+        elif self.getType() == 15:
+            self.consome('tkn_menor_igual')
+            self.operationADD()
+        elif self.getType() == 12:
+            self.consome('tkn_maior')
+            self.operationADD()
+        elif self.getType() == 13:
+            self.consome('tkn_maior_igual')
+            self.operationADD()
+
+    def operationADD(self):
+        self.operationMULT()
+        self.restOperationADD()
+
+    def restOperationADD(self):
+        if self.getType() == 1:
+            self.consome('tkn_add')
+            self.operationMULT()
+            self.restOperationADD()
+        elif self.getType() == 2:
+            self.consome('tkn_sub')
+            self.operationMULT()
+            self.restOperationADD()
+
+    def operationMULT(self):
+        self.uno()
+        self.restOperationMULT()
+
+    def restOperationMULT(self):
+        if self.getType() == 3:
+            self.consome('tkn_mult')
+            self.uno()
+            self.restOperationMULT()
+        elif self.getType() == 4:
+            self.consome('tkn_divisao')
+            self.uno()
+            self.restOperationMULT()
+        elif self.getType() == 5:
+            self.consome('tkn_mod')
+            self.uno()
+            self.restOperationMULT()
+        elif self.getType() == 6:
+            self.consome('tkn_div')
+            self.uno()
+            self.restOperationMULT()
+
+    def uno(self):
+        if self.getType() == 1:
+            self.consome('tkn_add')
+            self.uno()
+        elif self.getType() == 2:
+            self.consome('tkn_sub')
+            self.uno()
+        else:
+            self.fator()
+
+    def fator(self):
+        if self.getType() == 42:
+            self.consome('tkn_numero_inteiro')
+        elif self.getType() == 43:
+            self.consome('tkn_numero_real')
+        elif self.getType() == 41:
+            self.consome('tkn_variavel')
+        elif self.getType() == 39:
+            self.consome('tkn_abre_parenteses')
+            self.expr()
+            self.consome('tkn_fecha_parenteses')
+        elif self.getType() == 44:
+            self.consome('tkn_string')
 
 if __name__ == '__main__':
     analisador_sintatico = maquina(parser.executar())

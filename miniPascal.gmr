@@ -69,8 +69,9 @@
 <mult> -> <uno> <restoMult> ;
 <restoMult> -> '*' <uno> <restoMult>
             |  '/' <uno> <restoMult> 
-            |  'mod' <uno> <restoMult> | & ;
-            |  'div' <uno> <restoMult> | & ;
+            |  'mod' <uno> <restoMult>
+            |  'div' <uno> <restoMult> 
+            | & ;
 <uno> -> '+' <uno> | '-' <uno> | <fator> ;
 <fator> -> 'NUMint' | 'NUMfloat' 
          | 'IDENT'  | '(' <expr> ')' | 'STR' ;

@@ -14,7 +14,7 @@ tipos_tokens = {
     'tkn_maior_igual': 13,
     'tkn_menor': 14,
     'tkn_menor_igual': 15,
-    'tkn_atrib': 16,
+    'tkn_atribuicao': 16,
     'tkn_program': 17,
     'tkn_var': 18,
     'tkn_integer': 19,

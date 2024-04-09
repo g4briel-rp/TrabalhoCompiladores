@@ -58,15 +58,12 @@ class maquina:
     
     def getType(self):
         return self.currentPosition()[0]
-    
-    def getLexema(self):
-        return self.currentPosition()[1]
 
-    def erro(self, mensagem, linha, coluna):
-        print(f'Erro: {mensagem} na linha {linha}, coluna {coluna}')
+    def erro(self, mensagem, tipo, token, linha, coluna):
+        print(f'Erro: {mensagem} | era esperado "{tipo}" e foi passado "{token}" | linha {linha}, coluna {coluna}')
         exit()
 
-    def consome(self, tipo, lexema):
+    def consome(self, tipo):
         atual = self.currentPosition()
         
         token = ''
@@ -77,60 +74,55 @@ class maquina:
                     break
         
         if token == tipo:
-            if atual[1] == lexema or lexema == None:
-                self.lista.pop(0)
-                print(f'{token} {lexema} consumido!')
-                return True
-            else:
-                self.erro('lexema incorreto', atual[2], atual[3])
-                return False
+            self.lista.pop(0)
+            print(f'{token} consumido!')
+            return True
         else:
-            self.erro('token incorreto', atual[2], atual[3])
+            self.erro('token incorreto', tipo, token, atual[2], atual[3])
             return False
 
+    def inicia(self):
+        self.function()
+
     def function(self):
-        self.consome('tkn_program', 'program')
-        self.consome('tkn_variavel', None)
-        self.consome('tkn_ponto_virgula', ';')
+        self.consome('tkn_program')
+        self.consome('tkn_variavel')
+        self.consome('tkn_ponto_virgula')
         self.declarations()
-        pass
+        self.consome('tkn_begin')
+        self.stmtList()
 
     def declarations(self):
-        self.consome('tkn_var', 'var')
+        self.consome('tkn_var')
         self.declaration()
-        self.consome('tkn_begin', 'begin')
-        self.stmtList()
 
     def declaration(self):
         self.listaIdent()
-        self.consome('tkn_dois_pontos', ':')
+        self.consome('tkn_dois_pontos')
         self.tipo()
-        self.consome('tkn_ponto_virgula', ';')
+        self.consome('tkn_ponto_virgula')
         self.restoDeclaration()
 
     def listaIdent(self):
-        self.consome('tkn_variavel', None)
+        self.consome('tkn_variavel')
         self.restoIdentList()
 
     def restoIdentList(self):
         while self.getType() != 38:
-            self.consome('tkn_virgula', ',')
-            self.consome('tkn_variavel', None)
+            self.consome('tkn_virgula')
+            self.consome('tkn_variavel')
     
     def tipo(self):
-        if self.getType() == 42:
-            self.consome('tkn_integer', 'integer')
-        elif self.getType() == 43: 
-            self.consome('tkn_real', 'real')
-        elif self.getType() == 44:
-            self.consome('tkn_string', 'string')
-        else:
-            print('Erro: tipo de variável incorreto')
-            exit()
+        if self.getType() == 19:
+            self.consome('tkn_integer')
+        elif self.getType() == 20: 
+            self.consome('tkn_real')
+        elif self.getType() == 21:
+            self.consome('tkn_string')
     
     def restoDeclaration(self):
         if self.getType == 18:
-            self.consome('tkn_var', 'var')
+            self.consome('tkn_var')
             self.declaration()
             self.restoDeclaration()
     
@@ -146,22 +138,22 @@ class maquina:
             self.whileStmt()
         elif self.getType() == 16:
             self.atribStmt()
-            self.consome('tkn_ponto_virgula', ';')
+            self.consome('tkn_ponto_virgula')
         elif self.getType() == 30:
             self.ifStmt()
         elif self.getType() == 22:
             self.bloco()
         elif self.getType() == 28:
-            self.consome('tkn_break', 'break')
-            self.consome('tkn_ponto_virgula', ';')
+            self.consome('tkn_break')
+            self.consome('tkn_ponto_virgula')
         elif self.getType() == 29:
-            self.consome('tkn_continue', 'continue')
-            self.consome('tkn_ponto_virgula', ';')
+            self.consome('tkn_continue')
+            self.consome('tkn_ponto_virgula')
         elif self.getType() == 35:
-            self.consome('tkn_ponto_virgula', ';')
+            self.consome('tkn_ponto_virgula')
 
 # paramos na descrição das instruções linha 31 do miniPascal.gmr
 
 if __name__ == '__main__':
     analisador_sintatico = maquina(parser.executar())
-    analisador_sintatico.function()
+    analisador_sintatico.inicia()

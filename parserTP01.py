@@ -169,7 +169,8 @@ if __name__ == '__main__':
                 k = i + 1
                 while (linha[k] != '"'):
                     aux.append(linha[k])
-                    k += 1
+                    if len(linha) != 1:
+                        k += 1
                     if k == (len(linha) - 1):
                         linha = arquivo.readline()
                         numeroLinha += 1

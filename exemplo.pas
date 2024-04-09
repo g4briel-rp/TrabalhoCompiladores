@@ -3,8 +3,8 @@
 program exemplo;
 
 var op1, op2, op3:integer;
+var op1:=6789.1234, op2:=2307;
 begin
-    op1:=6789.1234, op2:=2307;
     write("Digite o n1.\n");
     read(op1);
     write("Digite o n2.\n");

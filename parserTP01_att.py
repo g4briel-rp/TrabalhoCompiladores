@@ -184,7 +184,8 @@ def executar():
                 colunaErro = k
                 while (linha[k] != '"'):
                     aux.append(linha[k])
-                    k += 1
+                    if len(linha) != 1:
+                        k += 1
                     if k == (len(linha) - 1):
                         linha = arquivo.readline()
                         numeroLinha += 1
@@ -209,7 +210,8 @@ def executar():
                 k = i + 1
                 colunaErro = k
                 while (linha[k] != '}'):
-                    k += 1
+                    if len(linha) != 1:
+                        k += 1
                     if k == (len(linha)):
                         linha = arquivo.readline()
                         numeroLinha += 1

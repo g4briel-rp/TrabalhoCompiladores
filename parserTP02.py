@@ -187,6 +187,7 @@ class maquina:
         elif self.getType() == tipos_tokens['tkn_write']:
             self.consome('tkn_write')
             self.consome('tkn_abre_parenteses')
+            # alterar aqui para chamar o outList e dentro dele chamar o out
             self.out()
             # if self.getType() == tipos_tokens['tkn_virgula']:
             #     self.consome('tkn_virgula')

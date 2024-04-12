@@ -5,6 +5,13 @@ program exemplo;
 var op1, op2, op3:integer;
 op1, op2, op3:real;
 begin
+    for CONT:=1 to 10 do
+    begin
+        write("Digite");
+        read(abc);
+    end;
+
+    {
     write("Digite o n1.\n");
     read(op1);
     write("Digite o n2.\n");
@@ -21,4 +28,5 @@ begin
     begin
         write("a sub eh",op1/op2);
     end;
+    }
 end.

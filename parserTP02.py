@@ -113,15 +113,15 @@ class maquina:
             self.consome('tkn_variavel')
     
     def tipo(self):
-        if self.getType() == 19:
+        if self.getType() == tipos_tokens['tkn_integer']:
             self.consome('tkn_integer')
-        elif self.getType() == 20: 
+        elif self.getType() == tipos_tokens['tkn_real']: 
             self.consome('tkn_real')
-        elif self.getType() == 21:
+        elif self.getType() == tipos_tokens['tkn_string']:
             self.consome('tkn_string')
     
     def restoDeclaration(self):
-        if self.getType() == 41:
+        if self.getType() == tipos_tokens['tkn_variavel']:
             self.declaration()
             self.restoDeclaration()
     
@@ -131,25 +131,24 @@ class maquina:
     def stmt(self):
         if self.getType() == tipos_tokens['tkn_for']:
             self.forStmt()
-        # elif self.getType() == 33 or self.getType() == 34:
-        #     self.ioStmt()
-        # elif self.getType() == 26:
-        #     self.whileStmt()
-        # elif self.getType() == 16:
-        #     self.atribStmt()
-        #     self.consome('tkn_ponto_virgula')
-        # elif self.getType() == 30:
-        #     self.ifStmt()
-        # elif self.getType() == 22:
-        #     self.bloco()
-        # elif self.getType() == 28:
-        #     self.consome('tkn_break')
-        #     self.consome('tkn_ponto_virgula')
-        # elif self.getType() == 29:
-        #     self.consome('tkn_continue')
-        #     self.consome('tkn_ponto_virgula')
-        # elif self.getType() == 35:
-        #     self.consome('tkn_ponto_virgula')
+        elif self.getType() == tipos_tokens['tkn_read'] or self.getType() == tipos_tokens['tkn_write']:
+            self.ioStmt()
+        elif self.getType() == tipos_tokens['tkn_while']:
+            self.whileStmt()
+        elif self.getType() == tipos_tokens['tkn_atribuicao']:
+            self.atrib()
+        elif self.getType() == tipos_tokens['tkn_if']:
+            self.ifStmt()
+        elif self.getType() == tipos_tokens['tkn_begin']:
+            self.bloco()
+        elif self.getType() == tipos_tokens['tkn_break']:
+            self.consome('tkn_break')
+            self.consome('tkn_ponto_virgula')
+        elif self.getType() == tipos_tokens['tkn_continue']:
+            self.consome('tkn_continue')
+            self.consome('tkn_ponto_virgula')
+        elif self.getType() == tipos_tokens['tkn_ponto_virgula']:
+            self.consome('tkn_ponto_virgula')
         
     def forStmt(self):
         self.consome('tkn_for')
@@ -160,10 +159,39 @@ class maquina:
         self.stmt()
 
     def endFor(self):
-        if self.getType() == 41:
+        if self.getType() == tipos_tokens['tkn_varivel']:
             self.consome('tkn_variavel')
-        elif self.getType() == 42:
+        elif self.getType() == tipos_tokens['tkn_numero_inteiro']:
             self.consome('tkn_numero_inteiro')
+
+    def ioStmt(self):
+        if self.getType() == tipos_tokens['tkn_read']:
+            self.consome('tkn_read')
+            self.consome('tkn_abre_parenteses')
+            self.consome('tkn_variavel')
+            self.consome('tkn_fecha_parenteses')
+            self.consome('tkn_ponto_virgula')
+        elif self.getType() == tipos_tokens['tkn_write']:
+            self.consome('tkn_write')
+            self.consome('tkn_abre_parenteses')
+            self.out()
+            self.consome('tkn_fecha_parenteses')
+            self.consome('tkn_ponto_virgula')
+
+    def out(self):
+        if self.getType() == tipos_tokens['tkn_string']:
+            self.consome('tkn_string')
+        elif self.getType() == tipos_tokens['tkn_variavel']:
+            self.consome('tkn_variavel')
+        elif self.getType() == tipos_tokens['tkn_numero_inteiro']:
+            self.consome('tkn_numero_inteiro')
+        elif self.getType() == tipos_tokens['tkn_numero_real']:
+            self.consome('tkn_numero_real')
+
+    def whileStmt(self):
+        self.consome('tkn_while')
+        self.expr()
+        self.stmt()
 
     def atrib(self):
         self.consome('tkn_variavel')
@@ -178,7 +206,7 @@ class maquina:
         self.restOperationOR()
 
     def restOperationOR(self):
-        if self.getType() == 7:
+        if self.getType() == tipos_tokens['tkn_or']:
             self.consome('tkn_or')
             self.operationAND()
             self.restOperationOR()
@@ -188,13 +216,13 @@ class maquina:
         self.restOperationAND()
 
     def restOperationAND(self):
-        if self.getType() == 8:
+        if self.getType() == tipos_tokens['tkn_and']:
             self.consome('tkn_and')
             self.operationNOT()
             self.restOperationAND()
 
     def operationNOT(self):
-        if self.getType() == 9:
+        if self.getType() == tipos_tokens['tkn_not']:
             self.consome('tkn_not')
             self.operationNOT()
         else:
@@ -205,22 +233,22 @@ class maquina:
         self.restRel()
 
     def restRel(self):
-        if self.getType() == 10:
+        if self.getType() == tipos_tokens['tkn_igual']:
             self.consome('tkn_igual')
             self.operationADD()
-        elif self.getType() == 11:
+        elif self.getType() == tipos_tokens['tkn_dif']:
             self.consome('tkn_dif')
             self.operationADD()
-        elif self.getType() == 14:
+        elif self.getType() == tipos_tokens['tkn_menor']:
             self.consome('tkn_menor')
             self.operationADD()
-        elif self.getType() == 15:
+        elif self.getType() == tipos_tokens['tkn_menor_igual']:
             self.consome('tkn_menor_igual')
             self.operationADD()
-        elif self.getType() == 12:
+        elif self.getType() == tipos_tokens['tkn_maior']:
             self.consome('tkn_maior')
             self.operationADD()
-        elif self.getType() == 13:
+        elif self.getType() == tipos_tokens['tkn_maior_igual']:
             self.consome('tkn_maior_igual')
             self.operationADD()
 
@@ -229,11 +257,11 @@ class maquina:
         self.restOperationADD()
 
     def restOperationADD(self):
-        if self.getType() == 1:
+        if self.getType() == tipos_tokens['tkn_add']:
             self.consome('tkn_add')
             self.operationMULT()
             self.restOperationADD()
-        elif self.getType() == 2:
+        elif self.getType() == tipos_tokens['tkn_sub']:
             self.consome('tkn_sub')
             self.operationMULT()
             self.restOperationADD()
@@ -243,46 +271,64 @@ class maquina:
         self.restOperationMULT()
 
     def restOperationMULT(self):
-        if self.getType() == 3:
+        if self.getType() == tipos_tokens['tkn_mult']:
             self.consome('tkn_mult')
             self.uno()
             self.restOperationMULT()
-        elif self.getType() == 4:
+        elif self.getType() == tipos_tokens['tkn_divisao']:
             self.consome('tkn_divisao')
             self.uno()
             self.restOperationMULT()
-        elif self.getType() == 5:
+        elif self.getType() == tipos_tokens['tkn_mod']:
             self.consome('tkn_mod')
             self.uno()
             self.restOperationMULT()
-        elif self.getType() == 6:
+        elif self.getType() == tipos_tokens['tkn_div']:
             self.consome('tkn_div')
             self.uno()
             self.restOperationMULT()
 
     def uno(self):
-        if self.getType() == 1:
+        if self.getType() == tipos_tokens['tkn_add']:
             self.consome('tkn_add')
             self.uno()
-        elif self.getType() == 2:
+        elif self.getType() == tipos_tokens['tkn_sub']:
             self.consome('tkn_sub')
             self.uno()
         else:
             self.fator()
 
     def fator(self):
-        if self.getType() == 42:
+        if self.getType() == tipos_tokens['tkn_numero_inteiro']:
             self.consome('tkn_numero_inteiro')
-        elif self.getType() == 43:
+        elif self.getType() == tipos_tokens['tkn_numero_real']:
             self.consome('tkn_numero_real')
-        elif self.getType() == 41:
+        elif self.getType() == tipos_tokens['tkn_variavel']:
             self.consome('tkn_variavel')
-        elif self.getType() == 39:
+        elif self.getType() == tipos_tokens['tkn_abre_parenteses']:
             self.consome('tkn_abre_parenteses')
             self.expr()
             self.consome('tkn_fecha_parenteses')
-        elif self.getType() == 44:
+        elif self.getType() == tipos_tokens['tkn_string']:
             self.consome('tkn_string')
+
+    def ifStmt(self):
+        self.consome('tkn_if')
+        self.expr()
+        self.consome('tkn_then')
+        self.stmt()
+        self.elsePart()
+
+    def elsePart(self):
+        if self.getType() == tipos_tokens['tkn_else']:
+            self.consome('tkn_else')
+            self.stmt()
+
+    def bloco(self):
+        self.consome('tkn_begin')
+        self.stmtList()
+        self.consome('tkn_end')
+        self.consome('tkn_ponto_virgula')
 
 if __name__ == '__main__':
     analisador_sintatico = maquina(parser.executar())

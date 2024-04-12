@@ -127,8 +127,14 @@ class maquina:
             self.declaration()
             self.restoDeclaration()
     
-    def stmtList(self):
+    def verificaRecursaoStmtList(self):
         if self.getType() == tipos_tokens['tkn_for'] or self.getType() == tipos_tokens['tkn_read'] or self.getType() == tipos_tokens['tkn_write'] or self.getType() == tipos_tokens['tkn_while'] or self.getType() == tipos_tokens['tkn_atribuicao'] or self.getType() == tipos_tokens['tkn_if'] or self.getType() == tipos_tokens['tkn_begin'] or self.getType() == tipos_tokens['tkn_break'] or self.getType() == tipos_tokens['tkn_continue'] or self.getType() == tipos_tokens['tkn_ponto_virgula']:
+            return True
+        
+        return False
+
+    def stmtList(self):
+        if self.verificaRecursaoStmtList():
             self.stmt()
             self.stmtList()
 

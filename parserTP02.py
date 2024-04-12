@@ -128,7 +128,7 @@ class maquina:
             self.restoDeclaration()
     
     def stmtList(self):
-        if self.getType() == tipos_tokens['tkn_variavel'] or self.getType() == tipos_tokens['tkn_numero_inteiro'] or self.getType() == tipos_tokens['tkn_numero_real'] or self.getType() == tipos_tokens['tkn_string']:
+        if self.getType() == tipos_tokens['tkn_for'] or self.getType() == tipos_tokens['tkn_read'] or self.getType() == tipos_tokens['tkn_write'] or self.getType() == tipos_tokens['tkn_while'] or self.getType() == tipos_tokens['tkn_atribuicao'] or self.getType() == tipos_tokens['tkn_if'] or self.getType() == tipos_tokens['tkn_begin'] or self.getType() == tipos_tokens['tkn_break'] or self.getType() == tipos_tokens['tkn_continue'] or self.getType() == tipos_tokens['tkn_ponto_virgula']:
             self.stmt()
             self.stmtList()
 

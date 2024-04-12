@@ -10,6 +10,7 @@ begin
     begin
         write("Altura inválida! Digite uma altura entre 0 2 e 2 5!");
         read(alt);
+        continue;
     end;
 
     for CONT:=1 to 10 do
@@ -18,14 +19,15 @@ begin
         read(abc);
     end;
     
+    result:=op3+op1;
     if op3<>1 then
     begin
-        write("a soma eh",op1);
+        write("a soma eh", result);
     end;
 
     if op3=2 then
     begin
-        write("a sub eh",op1/op2);
+        write("a sub eh");
     end;
 
 end.

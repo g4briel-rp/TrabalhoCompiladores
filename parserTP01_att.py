@@ -126,8 +126,7 @@ def executar():
                        erroLexema(numeroLinha, i, aux, var)
             elif linha[i] in caracteres:
                 if linha[i:i+2] == '//':
-                    linha = arquivo.readline()
-                    numeroLinha += 1
+                    i = len(linha)-1
                 elif linha[i] == '.' and ''.join(aux).isnumeric():
                     aux.append(linha[i])
                     

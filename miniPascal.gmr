@@ -38,11 +38,14 @@
 
 # comandos de IO
 <ioStmt> -> 'read' '(' 'IDENT' ')' ';' 
-          | 'write' '(' <out> ')' ';' ;
+          | 'write' '(' <outList> ')' ';' ;
+
+<outList> -> <out> <restoOutList>;
+<restoOutList> -> ',' <outList> | &;
 <out> -> 'STR' | 'IDENT' | 'NUMint' | 'NUMfloat' ;
 
 # comando while
-<whileStmt> -> 'while' <expr> <stmt> 'do';
+<whileStmt> -> 'while' <expr> 'do' <stmt> ;
 
 # comando if
 <ifStmt> -> 'if' <expr> 'then' <stmt> <elsePart> ;
@@ -69,9 +72,8 @@
 <mult> -> <uno> <restoMult> ;
 <restoMult> -> '*' <uno> <restoMult>
             |  '/' <uno> <restoMult> 
-            |  'mod' <uno> <restoMult>
-            |  'div' <uno> <restoMult> 
-            | & ;
+            |  'mod' <uno> <restoMult> | & ;
+            |  'div' <uno> <restoMult> | & ;
 <uno> -> '+' <uno> | '-' <uno> | <fator> ;
 <fator> -> 'NUMint' | 'NUMfloat' 
          | 'IDENT'  | '(' <expr> ')' | 'STR' ;

@@ -47,11 +47,13 @@ tipos_tokens = {
     'tkn_string': 44,
 }
 class maquina:
+    
     def __init__(self, lista):
         self.lista = lista
 
     def getList(self):
-        return self.lista
+        print(self.lista)
+        # return self.lista
 
     def currentPosition(self):
         return self.lista[0]
@@ -82,6 +84,7 @@ class maquina:
             return False
 
     def inicia(self):
+        self.getList()
         self.function()
 
     def function(self):
@@ -128,7 +131,7 @@ class maquina:
             self.restoDeclaration()
     
     def verificaRecursaoStmtList(self):
-        if self.getType() == tipos_tokens['tkn_for'] or self.getType() == tipos_tokens['tkn_read'] or self.getType() == tipos_tokens['tkn_write'] or self.getType() == tipos_tokens['tkn_while'] or self.getType() == tipos_tokens['tkn_atribuicao'] or self.getType() == tipos_tokens['tkn_if'] or self.getType() == tipos_tokens['tkn_begin'] or self.getType() == tipos_tokens['tkn_break'] or self.getType() == tipos_tokens['tkn_continue'] or self.getType() == tipos_tokens['tkn_ponto_virgula']:
+        if self.getType() == tipos_tokens['tkn_for'] or self.getType() == tipos_tokens['tkn_read'] or self.getType() == tipos_tokens['tkn_write'] or self.getType() == tipos_tokens['tkn_while'] or self.getType() == tipos_tokens['tkn_variavel'] or self.getType() == tipos_tokens['tkn_if'] or self.getType() == tipos_tokens['tkn_begin'] or self.getType() == tipos_tokens['tkn_break'] or self.getType() == tipos_tokens['tkn_continue'] or self.getType() == tipos_tokens['tkn_ponto_virgula']:
             return True
         
         return False
@@ -145,7 +148,7 @@ class maquina:
             self.ioStmt()
         elif self.getType() == tipos_tokens['tkn_while']:
             self.whileStmt()
-        elif self.getType() == tipos_tokens['tkn_atribuicao']:
+        elif self.getType() == tipos_tokens['tkn_variavel']:
             self.atrib()
         elif self.getType() == tipos_tokens['tkn_if']:
             self.ifStmt()

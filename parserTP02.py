@@ -185,6 +185,9 @@ class maquina:
             self.consome('tkn_write')
             self.consome('tkn_abre_parenteses')
             self.out()
+            # if self.getType() == tipos_tokens['tkn_virgula']:
+            #     self.consome('tkn_virgula')
+            #     self.expr()
             self.consome('tkn_fecha_parenteses')
             self.consome('tkn_ponto_virgula')
 
@@ -202,6 +205,7 @@ class maquina:
         self.consome('tkn_while')
         self.expr()
         self.stmt()
+        self.consome('tkn_do')
 
     def atrib(self):
         self.consome('tkn_variavel')

@@ -91,6 +91,8 @@ class maquina:
         self.declarations()
         self.consome('tkn_begin')
         self.stmtList()
+        self.consome('tkn_end')
+        self.consome('tkn_ponto')
 
     def declarations(self):
         self.consome('tkn_var')
@@ -126,7 +128,9 @@ class maquina:
             self.restoDeclaration()
     
     def stmtList(self):
-        self.stmt()
+        if self.getType() == tipos_tokens['tkn_variavel'] or self.getType() == tipos_tokens['tkn_numero_inteiro'] or self.getType() == tipos_tokens['tkn_numero_real'] or self.getType() == tipos_tokens['tkn_string']:
+            self.stmt()
+            self.stmtList()
 
     def stmt(self):
         if self.getType() == tipos_tokens['tkn_for']:
@@ -159,7 +163,7 @@ class maquina:
         self.stmt()
 
     def endFor(self):
-        if self.getType() == tipos_tokens['tkn_varivel']:
+        if self.getType() == tipos_tokens['tkn_variavel']:
             self.consome('tkn_variavel')
         elif self.getType() == tipos_tokens['tkn_numero_inteiro']:
             self.consome('tkn_numero_inteiro')

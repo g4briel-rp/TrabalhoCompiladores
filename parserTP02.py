@@ -84,7 +84,7 @@ class maquina:
             return False
 
     def inicia(self):
-        self.getList()
+        # self.getList()
         self.function()
 
     def function(self):
@@ -187,13 +187,13 @@ class maquina:
         elif self.getType() == tipos_tokens['tkn_write']:
             self.consome('tkn_write')
             self.consome('tkn_abre_parenteses')
-            # alterar aqui para chamar o outList e dentro dele chamar o out
-            self.out()
-            # if self.getType() == tipos_tokens['tkn_virgula']:
-            #     self.consome('tkn_virgula')
-            #     self.expr()
+            self.outlist()
             self.consome('tkn_fecha_parenteses')
             self.consome('tkn_ponto_virgula')
+
+    def outlist(self):
+        self.out()
+        self.restOutlist()
 
     def out(self):
         if self.getType() == tipos_tokens['tkn_string']:
@@ -204,6 +204,11 @@ class maquina:
             self.consome('tkn_numero_inteiro')
         elif self.getType() == tipos_tokens['tkn_numero_real']:
             self.consome('tkn_numero_real')
+
+    def restOutlist(self):
+        if self.getType() == tipos_tokens['tkn_virgula']:
+            self.consome('tkn_virgula')
+            self.outlist()
 
     def whileStmt(self):
         self.consome('tkn_while')

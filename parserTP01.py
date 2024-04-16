@@ -1,4 +1,5 @@
 import argparse
+import re
 
 def main():
     parser = argparse.ArgumentParser(description='Compiler')
@@ -7,11 +8,12 @@ def main():
     return args.filename
 
 def classifica(simbolos, var, value):
-    for s in simbolos.keys():
-        if simbolos[s] == var:
-            value = s
 
-    if value == None and isInt(var):
+    if var in simbolos.values():
+        for s in simbolos.keys():
+            if simbolos[s] == var:
+                value = s
+    elif value == None and isInt(var):
         value = 42
     elif value == None and isFloat(var):
         value = 43
@@ -20,7 +22,7 @@ def classifica(simbolos, var, value):
 
     return value
 
-def printLexemas(lexemas):
+def imprime(lexemas):
     for t in lexemas:
         print(t)
 
@@ -45,8 +47,7 @@ def erroLexema(numeroLinha, i, aux, var):
         f"Erro na linha: {numeroLinha}, coluna: {(i - len(aux) + 1)}\nLexema inválido: {var}")
     exit()
 
-if __name__ == '__main__':
-
+def executar():
     caracteres = ['+', '-', '*', '/', '(', ')', ';', ',', '.']
     caracteresEspeciais = ['=', '<', '>', ':']
     duplas = ['<=', '>=', ':=', '<>']
@@ -106,30 +107,41 @@ if __name__ == '__main__':
             continue
         i = 0
         while i < len(linha):
-            if linha[i].isalnum():
+            # vai armazenando em aux todo caractere alphanumérico até achar um separador
+            if linha[i].isalnum(): 
                 aux.append(linha[i])
-            elif linha[i].isspace():
+            # se o separador for um espaço
+            elif linha[i].isspace(): 
                 if len(aux) > 0:
                     var = ''.join(aux)
                     if isValid(var):
                         value = None
                         value = classifica(simbolos, var, value)
+                        # se o número for float e terminar com '.', concatenar o 0
+                        if value == 43 and var[len(var)-1] == '.':
+                            var += '0'
                         lexemas.append((value, var, numeroLinha, (i - len(aux) + 1)))
                         aux = []
                     else:
                        erroLexema(numeroLinha, i, aux, var)
             elif linha[i] in caracteres:
                 if linha[i:i+2] == '//':
-                    linha = arquivo.readline()
-                    numeroLinha += 1
+                    i = len(linha)-1
                 elif linha[i] == '.' and ''.join(aux).isnumeric():
                     aux.append(linha[i])
+                    
                 else:
                     if len(aux) > 0:
                         var = ''.join(aux)
+                        # print('valor de var: ',var)
+                        
+                        # veririca se o que está se formando é válido
                         if isValid(var):
                             value = None
                             value = classifica(simbolos, var, value)
+                            # print('valor da classificação: ',value)
+                            if value == 43 and var[len(var)-1] == '.':
+                                var += 0
                             lexemas.append((value, var, numeroLinha, (i - len(aux) + 1)))
                             aux = []
                         else:
@@ -166,7 +178,9 @@ if __name__ == '__main__':
                     lexemas.append((value, var, numeroLinha, i + 1))
                 aux = []
             elif linha[i] == '"':
+                linhaErro = numeroLinha
                 k = i + 1
+                colunaErro = k
                 while (linha[k] != '"'):
                     aux.append(linha[k])
                     if len(linha) != 1:
@@ -177,24 +191,33 @@ if __name__ == '__main__':
                         k = 0
                         if not linha:
                             print(
-                                f"Chegou ao final do arquivo sem fechar as aspas, na linha: {numeroLinha}, coluna: {k}")
+                                f"Chegou ao final do arquivo sem fechar as aspas, na linha: {linhaErro}, coluna: {colunaErro}")
                             exit()
                 i = k
                 var = ''.join(aux)
                 value = 44
+
+                if '\\n' in var:
+                    var = re.sub(r'\\n', '\n', var)
+                elif '\\t' in var:
+                    var = re.sub(r'\\t', '    ', var)
+                
                 lexemas.append((value, var, numeroLinha, (i - len(aux) + 1)))
                 aux = []
             elif linha[i] == '{':
+                linhaErro = numeroLinha
                 k = i + 1
+                colunaErro = k
                 while (linha[k] != '}'):
-                    k += 1
+                    if len(linha) != 1:
+                        k += 1
                     if k == (len(linha)):
                         linha = arquivo.readline()
                         numeroLinha += 1
                         k = 0
                         if not linha:
                             print(
-                                f"Chegou ao final do arquivo sem fechar as chaves, na linha: {numeroLinha}, coluna: {k}")
+                                f"Chegou ao final do arquivo sem fechar as chaves, na linha: {linhaErro}, coluna: {colunaErro}")
                             exit()
                 i = k
             else:
@@ -203,4 +226,8 @@ if __name__ == '__main__':
                 exit()
             i += 1
         numeroLinha += 1
-    printLexemas(lexemas)
+    # imprime(lexemas)
+    return lexemas
+
+if __name__ == '__main__':
+    executar()

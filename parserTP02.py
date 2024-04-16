@@ -1,4 +1,4 @@
-import parserTP01_att as parser
+import parserTP01 as parser
 
 tipos_tokens = {
     'tkn_add': 1,
@@ -124,6 +124,16 @@ class maquina:
             self.consome('tkn_real')
         elif self.getType() == tipos_tokens['tkn_string']:
             self.consome('tkn_string')
+        else:
+            atual = self.currentPosition()
+            token = ''
+            if atual[0] in tipos_tokens.values():
+                for key, value in tipos_tokens.items():
+                    if value == atual[0]:
+                        token = key
+                        break
+                    
+            self.erro('token incorreto', 'tkn_integer, tkn_real ou tkn_string', token, atual[2], atual[3])
     
     def restoDeclaration(self):
         if self.getType() == tipos_tokens['tkn_variavel']:
@@ -176,6 +186,16 @@ class maquina:
             self.consome('tkn_variavel')
         elif self.getType() == tipos_tokens['tkn_numero_inteiro']:
             self.consome('tkn_numero_inteiro')
+        else:
+            atual = self.currentPosition()
+            token = ''
+            if atual[0] in tipos_tokens.values():
+                for key, value in tipos_tokens.items():
+                    if value == atual[0]:
+                        token = key
+                        break
+                    
+            self.erro('token incorreto', 'tkn_variavel ou tkn_numero_inteiro', token, atual[2], atual[3])
 
     def ioStmt(self):
         if self.getType() == tipos_tokens['tkn_read']:
@@ -204,6 +224,16 @@ class maquina:
             self.consome('tkn_numero_inteiro')
         elif self.getType() == tipos_tokens['tkn_numero_real']:
             self.consome('tkn_numero_real')
+        else:
+            atual = self.currentPosition()
+            token = ''
+            if atual[0] in tipos_tokens.values():
+                for key, value in tipos_tokens.items():
+                    if value == atual[0]:
+                        token = key
+                        break
+
+            self.erro('token incorreto', 'tkn_string, tkn_variavel, tkn_numero_inteiro ou tkn_numero_real', token, atual[2], atual[3])
 
     def restOutlist(self):
         if self.getType() == tipos_tokens['tkn_virgula']:
@@ -334,6 +364,16 @@ class maquina:
             self.consome('tkn_fecha_parenteses')
         elif self.getType() == tipos_tokens['tkn_string']:
             self.consome('tkn_string')
+        else:
+            atual = self.currentPosition()
+            token = ''
+            if atual[0] in tipos_tokens.values():
+                for key, value in tipos_tokens.items():
+                    if value == atual[0]:
+                        token = key
+                        break
+                    
+            self.erro('token incorreto', 'tkn_numero_inteiro, tkn_numero_real, tkn_variavel, (<expr>) ou tkn_string', token, atual[2], atual[3])
 
     def ifStmt(self):
         self.consome('tkn_if')

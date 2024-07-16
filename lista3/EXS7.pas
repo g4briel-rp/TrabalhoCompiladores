@@ -1,34 +1,30 @@
 program exs7;
 
-uses crt;
-
 var i,j,soma,aux: integer;
 
 begin;
 
  {Se declara as variaveis para realizar os calculos.}
 
- clrscr;
- writeln ('Fibbonaci.');
- readkey;
+ write ("Fibbonaci.");
 
  {Atribui-se os valores para a soma=0 e para o aux=1}
 
  soma:=0;
  aux:=1;
 
- {ê nescessario apresentar os resultados antes de se realizar os calculos}
+ {ÔøΩ nescessario apresentar os resultados antes de se realizar os calculos}
 
  for i:=1 to 6 do
      begin
 
-          writeln (soma);
-          writeln (aux);
+          write (soma);
+          write (aux);
           soma:=soma+aux;
 
-               {Quando se faz um outro laáo dentro do primeiro com condiá∆o
+               {Quando se faz um outro laÔøΩo dentro do primeiro com condiÔøΩÔøΩo
                de parada a soma do ultimo numero se define a soma dos dois
-               e eles sempre v∆o se acrescentando e assim se faz o fibonacci.}
+               e eles sempre vÔøΩo se acrescentando e assim se faz o fibonacci.}
 
                for j:=1 to soma do
                begin
@@ -38,5 +34,4 @@ begin;
 
      end;
 
- readkey;
 end.

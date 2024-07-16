@@ -1,21 +1,14 @@
 program EXS2;
 
-uses crt;
-
 var n1, i , j, fat: integer;
     e: real;
 
 begin;
-
- clrscr;
- writeln ('caro usuario este programa recebera um numero inteiro a sua escolha e adicionara a 1 uma fracao ate chegar,');
- writeln ('no numero escolhido.');
- write ('para prosseguir tecle enter.');
- readkey;
-
- clrscr;
- writeln ('por favor digite um numero inteiro e positivo.');
- readln (n1);
+ write ("caro usuario este programa recebera um numero inteiro a sua escolha e adicionara a 1 uma fracao ate chegar,");
+ write ("no numero escolhido.");
+ write ("para prosseguir tecle enter.");
+ write ("por favor digite um numero inteiro e positivo.");
+ read (n1);
 
  e:=1;
 
@@ -32,9 +25,8 @@ begin;
        e:= e+1/fat;
      end;
 
- writeln ('E igual a ', e:0:6 , ' .');
- writeln (' ');
- write ('para encerrar o programa precione qualquer tecla.');
- readkey;
+ write ("E igual a ", e , " .");
+ write (" ");
+ write ("para encerrar o programa precione qualquer tecla.");
 
 end.

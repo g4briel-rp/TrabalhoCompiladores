@@ -1,24 +1,19 @@
 program exs5;
 
-uses crt;
-
 var num, i,j, aux, aux2, sinal,sinal2,cont ,lol:integer;
     x, solucao,fat,teste: real;
 
 begin;
 
- {Depois de se declarar as variaveis se lˆ o valor de x.}
+ {Depois de se declarar as variaveis se lï¿½ o valor de x.}
 
- clrscr;
- writeln ('Digite o valor de X.');
- readln (x);
+ write ("Digite o valor de X.");
+ read (x);
 
- {Se retira a parte inteira de x para poder utiliza-la como fim do la‡o de
-  repeti‡Æo. E se atribui valores as variaveis para que possa entrar nos la‡os
-  e que de certo a exponencia‡Æo inicial.}
+ {Se retira a parte inteira de x para poder utiliza-la como fim do laï¿½o de
+  repetiï¿½ï¿½o. E se atribui valores as variaveis para que possa entrar nos laï¿½os
+  e que de certo a exponenciaï¿½ï¿½o inicial.}
 
- clrscr;
- lol:= trunc(x);
  aux:=1;
  aux2:=0;
  sinal:=1;
@@ -26,7 +21,7 @@ begin;
  if lol<0 then
  lol:=lol*(-1);
 
- {Se cria um la‡o que vai ate a variavel x, entÆo se cria uma condi‡Æo para
+ {Se cria um laï¿½o que vai ate a variavel x, entï¿½o se cria uma condiï¿½ï¿½o para
  definir se a fatorial sera positiva ou negativa e atribui o valor do contador}
 
  for i:=1 to lol do
@@ -40,9 +35,9 @@ begin;
 
             cont:=1;
 
-            {Ja no segundo la‡o se coloca um contador para definir a quanto
-             x sera elevado e se tem as duas condi‡äes de if para definir de
-             quanto a eleva‡Æo de x ser  dividido.}
+            {Ja no segundo laï¿½o se coloca um contador para definir a quanto
+             x sera elevado e se tem as duas condiï¿½ï¿½es de if para definir de
+             quanto a elevaï¿½ï¿½o de x serï¿½ dividido.}
 
            for j:=1 to i do
                begin
@@ -61,23 +56,20 @@ begin;
 
               end;
 
-     {Aqui se faz os calculos e vai se atribuindo a divisÆo e exponencia‡Æo.}
+     {Aqui se faz os calculos e vai se atribuindo a divisï¿½o e exponenciaï¿½ï¿½o.}
 
      aux2:=aux2+sinal;
-     fat:= exp(cont * ln(x));
+     fat:= cont * x;
      fat:= sinal2*(fat/aux2);
      teste:=teste+fat;
      solucao:=solucao+fat;
-     writeln (teste:0:2);
-     delay (400);
+     write (teste);
 
      end;
 
    {E por fim se apresenta ao usuario o resultado final.}
- clrscr;
- writeln ('O resultado da fatorial ‚, ', solucao:0:10 ,' .');
- writeln ('');
- write ('Para encerrar o programa pressione qualquer tecla.');
- readkey;
+ write ("O resultado da fatorial ï¿½, ", solucao ," .");
+ write ("");
+ write ("Para encerrar o programa pressione qualquer tecla.");
 
 end.

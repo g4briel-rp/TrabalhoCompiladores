@@ -29,6 +29,8 @@ tipos = {
 
 operadores_logicos_relacionais_atibuicao = ['<', '<=', '>', '>=', '==', '<>', '=', '||', '&&', '!']
 
+operadores_aritmeticos = ['+', '-', '*', '/', '%', '//']
+
 def instrucaoIsValid(instrucao):
     if instrucao[0] in tipos.values():
         return True
@@ -39,239 +41,293 @@ def existeVariavel(variavel, variaveis):
         return True
     return False
 
-def executaOperacao(instrucao):
+def executaOperacao(instrucao, variaveis):
     operador = instrucao[0]
     variavel = instrucao[1]
+
     operando_1 = instrucao[2]
+    tipo_operando_1 = type(operando_1)
+
+    existe_variavel_1 = False
+    if tipo_operando_1 == str:
+        existe_variavel_1 = existeVariavel(operando_1, variaveis)
+
     operando_2 = instrucao[3]
+    tipo_operando_2 = type(operando_2)
+
+    existe_variavel_2 = False
+    if tipo_operando_2 == str:
+        existe_variavel_2 = existeVariavel(operando_2, variaveis)
 
     match operador:
-        case '<':
-            executaMenor(variavel, operando_1, operando_2)
+        case '<':    
+            if existe_variavel_1 and not(existe_variavel_2):
+                if variaveis[operando_1] < operando_2:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            elif not(existe_variavel_1) and existe_variavel_2:
+                if operando_1 < variaveis[operando_2]:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            elif not(existe_variavel_1) and not(existe_variavel_2):
+                if operando_1 < operando_2:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            else:
+                if variaveis[operando_1] < variaveis[operando_2]:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
         case '<=':
-            executaMenorIgual(variavel, operando_1, operando_2)
+            if existe_variavel_1 and not(existe_variavel_2):
+                if variaveis[operando_1] <= operando_2:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            elif not(existe_variavel_1) and existe_variavel_2:
+                if operando_1 <= variaveis[operando_2]:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            elif not(existe_variavel_1) and not(existe_variavel_2):
+                if operando_1 <= operando_2:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            else:
+                if variaveis[operando_1] <= variaveis[operando_2]:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
         case '>':
-            executaMaior(variavel, operando_1, operando_2)
+            if existe_variavel_1 and not(existe_variavel_2):
+                if variaveis[operando_1] > operando_2:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            elif not(existe_variavel_1) and existe_variavel_2:
+                if operando_1 > variaveis[operando_2]:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            elif not(existe_variavel_1) and not(existe_variavel_2):
+                if operando_1 > operando_2:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            else:
+                if variaveis[operando_1] > variaveis[operando_2]:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
         case '>=':
-            executaMaiorIgual(variavel, operando_1, operando_2)
+            if existe_variavel_1 and not(existe_variavel_2):
+                if variaveis[operando_1] >= operando_2:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            elif not(existe_variavel_1) and existe_variavel_2:
+                if operando_1 >= variaveis[operando_2]:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            elif not(existe_variavel_1) and not(existe_variavel_2):
+                if operando_1 >= operando_2:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            else:
+                if variaveis[operando_1] >= variaveis[operando_2]:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
         case '==':
-            executaIgualdade(variavel, operando_1, operando_2)
+            if existe_variavel_1 and not(existe_variavel_2):
+                if variaveis[operando_1] == operando_2:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            elif not(existe_variavel_1) and existe_variavel_2:
+                if operando_1 == variaveis[operando_2]:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            elif not(existe_variavel_1) and not(existe_variavel_2):
+                if operando_1 == operando_2:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            else:
+                if variaveis[operando_1] == variaveis[operando_2]:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
         case '<>':
-            executaDiferenca(variavel, operando_1, operando_2)
+            if existe_variavel_1 and not(existe_variavel_2):
+                if variaveis[operando_1] != operando_2:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            elif not(existe_variavel_1) and existe_variavel_2:
+                if operando_1 != variaveis[operando_2]:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            elif not(existe_variavel_1) and not(existe_variavel_2):
+                if operando_1 != operando_2:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            else:
+                if variaveis[operando_1] != variaveis[operando_2]:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
         case '=':
-            executaAtribuicao(variavel, operando_1, operando_2)
+            if operando_2 == None:
+                if operando_1 == 'int':
+                    variaveis[variavel] = 0
+                elif operando_1 == 'float':
+                    variaveis[variavel] = 0.0
+                elif operando_1 == 'string':
+                    variaveis[variavel] = ''
+                else:
+                    print(f'Operação inválida: {instrucao}')
+                    exit()
+            else:
+                variaveis[variavel] = operando_2
         case '||':
-            executaOr(variavel, operando_1, operando_2)
+            if existe_variavel_1 and not(existe_variavel_2):
+                if variaveis[operando_1] or operando_2:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            elif not(existe_variavel_1) and existe_variavel_2:
+                if operando_1 or variaveis[operando_2]:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            elif not(existe_variavel_1) and not(existe_variavel_2):
+                if operando_1 or operando_2:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            else:
+                if variaveis[operando_1] or variaveis[operando_2]:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
         case '&&':
-            executaAnd(variavel, operando_1, operando_2)
+            if existe_variavel_1 and not(existe_variavel_2):
+                if variaveis[operando_1] and operando_2:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            elif not(existe_variavel_1) and existe_variavel_2:
+                if operando_1 and variaveis[operando_2]:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            elif not(existe_variavel_1) and not(existe_variavel_2):
+                if operando_1 and operando_2:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
+            else:
+                if variaveis[operando_1] and variaveis[operando_2]:
+                    variaveis[variavel] = True
+                else:
+                    variaveis[variavel] = False
         case '!':
-            executaNot(variavel, operando_1, operando_2)
+            if existe_variavel_1:
+                variaveis[variavel] = not variaveis[operando_1]
+            else:
+                variaveis[variavel] = not operando_1
+        case '+':
+            if existe_variavel_1 and existe_variavel_2:
+                variaveis[variavel] = variaveis[operando_1] + variaveis[operando_2]
+            elif existe_variavel_1 and not(existe_variavel_2):
+                variaveis[variavel] = variaveis[operando_1] + operando_2
+            elif not(existe_variavel_1) and existe_variavel_2:
+                variaveis[variavel] = operando_1 + variaveis[operando_2]
+            else:
+                variaveis[variavel] = operando_1 + operando_2
+        case '-':
+            if operando_2 != None:
+                if existe_variavel_1 and existe_variavel_2:
+                    variaveis[variavel] = variaveis[operando_1] - variaveis[operando_2]
+                elif existe_variavel_1 and not(existe_variavel_2):
+                    variaveis[variavel] = variaveis[operando_1] - operando_2
+                elif not(existe_variavel_1) and existe_variavel_2:
+                    variaveis[variavel] = operando_1 - variaveis[operando_2]
+                else:
+                    variaveis[variavel] = operando_1 - operando_2
+            else:
+                if existe_variavel_1:
+                    if type(variaveis[operando_1]) == int or type(variaveis[operando_1]) == float:
+                        variaveis[variavel] = -variaveis[operando_1]
+                    else:
+                        print(f'Operação inválida: {instrucao}')
+                        exit()
+        case '*':
+            if existe_variavel_1 and existe_variavel_2:
+                variaveis[variavel] = variaveis[operando_1] * variaveis[operando_2]
+            elif existe_variavel_1 and not(existe_variavel_2):
+                variaveis[variavel] = variaveis[operando_1] * operando_2
+            elif not(existe_variavel_1) and existe_variavel_2:
+                variaveis[variavel] = operando_1 * variaveis[operando_2]
+            else:
+                variaveis[variavel] = operando_1 * operando_2
+        case '/':
+            if existe_variavel_2:
+                if variaveis[operando_2] == 0 or variaveis[operando_2] == 0.0:
+                    print('Divisão por zero')
+                    exit()
+            else:
+                if operando_2 == 0 or operando_2 == 0.0:
+                    print('Divisão por zero')
+                    exit()
 
-def executaMenor(variavel, operando_1, operando_2):
-    if type(operando_1) == str and type(operando_2) == str:
-        if existeVariavel(operando_1, variaveis) and existeVariavel(operando_2, variaveis):
-            if variaveis[operando_1] < variaveis[operando_2]:
-                variaveis[variavel] = True
+            if existe_variavel_1 and existe_variavel_2:
+                variaveis[variavel] = variaveis[operando_1] / variaveis[operando_2]
+            elif existe_variavel_1 and not(existe_variavel_2):
+                variaveis[variavel] = variaveis[operando_1] / operando_2
+            elif not(existe_variavel_1) and existe_variavel_2:
+                variaveis[variavel] = operando_1 / variaveis[operando_2]
             else:
-                variaveis[variavel] = False
-    elif type(operando_1) == str and type(operando_2) != str:
-        if existeVariavel(operando_1, variaveis):
-            if int(variaveis[operando_1]) < operando_2:
-                variaveis[variavel] = True
+                variaveis[variavel] = operando_1 / operando_2
+        case '%':
+            if variaveis[operando_2] == 0 or variaveis[operando_2] == 0.0 or operando_2 == 0 or operando_2 == 0.0:
+                print('Divisão por zero')
+                exit()
+                
+            if existe_variavel_1 and existe_variavel_2:
+                variaveis[variavel] = variaveis[operando_1] % variaveis[operando_2]
+            elif existe_variavel_1 and not(existe_variavel_2):
+                variaveis[variavel] = variaveis[operando_1] % operando_2
+            elif not(existe_variavel_1) and existe_variavel_2:
+                variaveis[variavel] = operando_1 % variaveis[operando_2]
             else:
-                variaveis[variavel] = False
-    elif type(operando_1) != str and type(operando_2) == str:
-        if existeVariavel(operando_2, variaveis):
-            if operando_1 < int(variaveis[operando_2]):
-                variaveis[variavel] = True
+                variaveis[variavel] = operando_1 % operando_2
+        case '//':
+            if variaveis[operando_2] == 0 or variaveis[operando_2] == 0.0 or operando_2 == 0 or operando_2 == 0.0:
+                print('Divisão por zero')
+                exit()
+                
+            if existe_variavel_1 and existe_variavel_2:
+                variaveis[variavel] = variaveis[operando_1] // variaveis[operando_2]
+            elif existe_variavel_1 and not(existe_variavel_2):
+                variaveis[variavel] = variaveis[operando_1] // operando_2
+            elif not(existe_variavel_1) and existe_variavel_2:
+                variaveis[variavel] = operando_1 // variaveis[operando_2]
             else:
-                variaveis[variavel] = False
-    else:
-        if operando_1 < operando_2:
-            variaveis[variavel] = True
-        else:
-            variaveis[variavel] = False
-
-def executaMenorIgual(variavel, operando_1, operando_2):
-    if type(operando_1) == str and type(operando_2) == str:
-        if existeVariavel(operando_1, variaveis) and existeVariavel(operando_2, variaveis):
-            if variaveis[operando_1] <= variaveis[operando_2]:
-                variaveis[variavel] = True
-            else:
-                variaveis[variavel] = False
-    elif type(operando_1) == str and type(operando_2) != str:
-        if existeVariavel(operando_1, variaveis):
-            if int(variaveis[operando_1]) <= operando_2:
-                variaveis[variavel] = True
-            else:
-                variaveis[variavel] = False
-    elif type(operando_1) != str and type(operando_2) == str:
-        if existeVariavel(operando_2, variaveis):
-            if operando_1 <= int(variaveis[operando_2]):
-                variaveis[variavel] = True
-            else:
-                variaveis[variavel] = False
-    else:
-        if operando_1 <= operando_2:
-            variaveis[variavel] = True
-        else:
-            variaveis[variavel] = False
-
-def executaMaior(variavel, operando_1, operando_2):
-    if type(operando_1) == str and type(operando_2) == str:
-        if existeVariavel(operando_1, variaveis) and existeVariavel(operando_2, variaveis):
-            if variaveis[operando_1] > variaveis[operando_2]:
-                variaveis[variavel] = True
-            else:
-                variaveis[variavel] = False
-    elif type(operando_1) == str and type(operando_2) != str:
-        if existeVariavel(operando_1, variaveis):
-            if int(variaveis[operando_1]) > operando_2:
-                variaveis[variavel] = True
-            else:
-                variaveis[variavel] = False
-    elif type(operando_1) != str and type(operando_2) == str:
-        if existeVariavel(operando_2, variaveis):
-            if operando_1 > int(variaveis[operando_2]):
-                variaveis[variavel] = True
-            else:
-                variaveis[variavel] = False
-    else:
-        if operando_1 > operando_2:
-            variaveis[variavel] = True
-        else:
-            variaveis[variavel] = False
-
-def executaMaiorIgual(variavel, operando_1, operando_2):
-    if type(operando_1) == str and type(operando_2) == str:
-        if existeVariavel(operando_1, variaveis) and existeVariavel(operando_2, variaveis):
-            if variaveis[operando_1] >= variaveis[operando_2]:
-                variaveis[variavel] = True
-            else:
-                variaveis[variavel] = False
-    elif type(operando_1) == str and type(operando_2) != str:
-        if existeVariavel(operando_1, variaveis):
-            if int(variaveis[operando_1]) >= operando_2:
-                variaveis[variavel] = True
-            else:
-                variaveis[variavel] = False
-    elif type(operando_1) != str and type(operando_2) == str:
-        if existeVariavel(operando_2, variaveis):
-            if operando_1 >= int(variaveis[operando_2]):
-                variaveis[variavel] = True
-            else:
-                variaveis[variavel] = False
-    else:
-        if operando_1 >= operando_2:
-            variaveis[variavel] = True
-        else:
-            variaveis[variavel] = False
-
-def executaIgualdade(variavel, operando_1, operando_2):
-    if type(operando_1) == str and type(operando_2) == str:
-        if existeVariavel(operando_1, variaveis) and existeVariavel(operando_2, variaveis):
-            if variaveis[operando_1] == variaveis[operando_2]:
-                variaveis[variavel] = True
-            else:
-                variaveis[variavel] = False
-    elif type(operando_1) == str and type(operando_2) != str:
-        if existeVariavel(operando_1, variaveis):
-            if int(variaveis[operando_1]) == operando_2:
-                variaveis[variavel] = True
-            else:
-                variaveis[variavel] = False
-    elif type(operando_1) != str and type(operando_2) == str:
-        if existeVariavel(operando_2, variaveis):
-            if operando_1 == int(variaveis[operando_2]):
-                variaveis[variavel] = True
-            else:
-                variaveis[variavel] = False
-    else:
-        if operando_1 == operando_2:
-            variaveis[variavel] = True
-        else:
-            variaveis[variavel] = False
-
-def executaDiferenca(variavel, operando_1, operando_2):
-    if type(operando_1) == str and type(operando_2) == str:
-        if existeVariavel(operando_1, variaveis) and existeVariavel(operando_2, variaveis):
-            if variaveis[operando_1] != variaveis[operando_2]:
-                variaveis[variavel] = True
-            else:
-                variaveis[variavel] = False
-    elif type(operando_1) == str and type(operando_2) != str:
-        if existeVariavel(operando_1, variaveis):
-            if int(variaveis[operando_1]) != operando_2:
-                variaveis[variavel] = True
-            else:
-                variaveis[variavel] = False
-    elif type(operando_1) != str and type(operando_2) == str:
-        if existeVariavel(operando_2, variaveis):
-            if operando_1 != int(variaveis[operando_2]):
-                variaveis[variavel] = True
-            else:
-                variaveis[variavel] = False
-    else:
-        if operando_1 != operando_2:
-            variaveis[variavel] = True
-        else:
-            variaveis[variavel] = False
-
-def executaAtribuicao():
-    pass
-
-def executaOr(variavel, operando_1, operando_2):
-    if type(operando_1) == str and type(operando_2) == str:
-        if existeVariavel(operando_1, variaveis) and existeVariavel(operando_2, variaveis):
-            if variaveis[operando_1] or variaveis[operando_2]:
-                variaveis[variavel] = True
-            else:
-                variaveis[variavel] = False
-    elif type(operando_1) == str and type(operando_2) != str:
-        if existeVariavel(operando_1, variaveis):
-            if int(variaveis[operando_1]) or operando_2:
-                variaveis[variavel] = True
-            else:
-                variaveis[variavel] = False
-    elif type(operando_1) != str and type(operando_2) == str:
-        if existeVariavel(operando_2, variaveis):
-            if operando_1 or int(variaveis[operando_2]):
-                variaveis[variavel] = True
-            else:
-                variaveis[variavel] = False
-    else:
-        if operando_1 or operando_2:
-            variaveis[variavel] = True
-        else:
-            variaveis[variavel] = False
-
-def executaAnd(variavel, operando_1, operando_2):
-    if type(operando_1) == str and type(operando_2) == str:
-        if existeVariavel(operando_1, variaveis) and existeVariavel(operando_2, variaveis):
-            if variaveis[operando_1] and variaveis[operando_2]:
-                variaveis[variavel] = True
-            else:
-                variaveis[variavel] = False
-    elif type(operando_1) == str and type(operando_2) != str:
-        if existeVariavel(operando_1, variaveis):
-            if int(variaveis[operando_1]) and operando_2:
-                variaveis[variavel] = True
-            else:
-                variaveis[variavel] = False
-    elif type(operando_1) != str and type(operando_2) == str:
-        if existeVariavel(operando_2, variaveis):
-            if operando_1 and int(variaveis[operando_2]):
-                variaveis[variavel] = True
-            else:
-                variaveis[variavel] = False
-    else:
-        if operando_1 and operando_2:
-            variaveis[variavel] = True
-        else:
-            variaveis[variavel] = False
-
-def executaNot():
-    pass
+                variaveis[variavel] = operando_1 // operando_2
+        case _:
+            print(f'Operador "{operador}" não existe')
+            exit()
 
 if __name__ == '__main__':
     lista = codigointermediario.programa()
@@ -305,7 +361,7 @@ if __name__ == '__main__':
                     print(executa[2])
                 elif executa[3]:
                     if executa[3] in variaveis:
-                        print(f'Valor da variavel {executa[3]}: {variaveis[executa[3]]}')
+                        print(f'{variaveis[executa[3]]}')
                     else:
                         print(f'Variável "{executa[3]}" não existe')
                         exit()
@@ -314,10 +370,20 @@ if __name__ == '__main__':
                     exit()
             elif executa[1] == 'scan':
                 valor = input()
-                variaveis[executa[2]] = valor
+                
+                match executa[3]:
+                    case 'int':
+                        variaveis[executa[2]] = int(valor)
+                    case 'float':
+                        variaveis[executa[2]] = float(valor)
+                    case 'string':
+                        variaveis[executa[2]] = valor
+                    case _:
+                        print(f'Instrução inválida: {executa}')
+                        exit()               
         elif executa[0] == 'jump':
             if executa[1] in labels:
-                # print(f'Pulando para label "{executa[1]}" na linha {labels[executa[1]]}')
+                print(f'Pulando para label "{executa[1]}" na linha {labels[executa[1]]}')
                 ponteiro_execucao = labels[executa[1]]
             else:
                 print(f'Label "{executa[1]}" não existe')
@@ -336,11 +402,9 @@ if __name__ == '__main__':
             else:
                 print(f'Variável "{executa[1]}" não existe')
                 exit()
-        elif executa[0] in operadores_logicos_relacionais_atibuicao:
-            executaOperacao(executa)
-        
-        # continuar para as outras instruções
+        elif executa[0] in operadores_logicos_relacionais_atibuicao or executa[0] in operadores_aritmeticos:
+            executaOperacao(executa, variaveis)
         
         ponteiro_execucao += 1
 
-    print(variaveis)
+    # print(variaveis)

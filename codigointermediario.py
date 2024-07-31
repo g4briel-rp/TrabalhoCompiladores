@@ -1,10 +1,10 @@
 def programa():
     l = [
         ("call","print","Entre A:",None),
-        ("call","scan","a",None),
+        ("call","scan","a","int"),
         ("call","print",None,"a"),
-        ("<","temp","a",10),
-        (">=","temp2","a",5),
+        ("<=","temp","a", 10),
+        (">=","temp2","a", 5),
         ("&&","temp3","temp","temp2"),
         ("if","temp3","verdade","falsidade"),
         ("label","verdade",None,None),

@@ -1,4 +1,7 @@
 import codigointermediario
+import trab4
+import trab4.exe1
+import trab4.exe2
 
 # unitario - subtração -> inverter sinal | exemplo: -(-5)
 # unitario - adição -> manter sinal | exemplo: +(-5)
@@ -330,7 +333,10 @@ def executaOperacao(instrucao, variaveis):
             exit()
 
 if __name__ == '__main__':
-    lista = codigointermediario.programa()
+    # lista = codigointermediario.programa()
+    # lista = trab4.exe1.programa()
+    lista = trab4.exe2.programa()
+    # lista = trab4.exe3.programa()
     # print(lista)
 
     labels = {}
@@ -383,7 +389,7 @@ if __name__ == '__main__':
                         exit()               
         elif executa[0] == 'jump':
             if executa[1] in labels:
-                print(f'Pulando para label "{executa[1]}" na linha {labels[executa[1]]}')
+                # print(f'Pulando para label "{executa[1]}" na linha {labels[executa[1]]}')
                 ponteiro_execucao = labels[executa[1]]
             else:
                 print(f'Label "{executa[1]}" não existe')

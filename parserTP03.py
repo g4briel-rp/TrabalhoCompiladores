@@ -21,7 +21,7 @@ tipos_tokens = {
     'tkn_var': 18,
     'tkn_integer': 19,
     'tkn_real': 20,
-    'tkn_string': 21,
+    'tkn_tipo_string': 21,
     'tkn_begin': 22,
     'tkn_end': 23,
     'tkn_for': 24,
@@ -47,21 +47,34 @@ tipos_tokens = {
     'tkn_string': 44,
 }
 
-class labels:
+class gerador:
+    def __init__(self):
+        self.contador_for = 0
+        self.contador_while = 0
+        self.contador_if = 0
+        self.contador_var_temp = 0
 
-
-    def __init__(self, nomeLabel):
-        self.contador = 0
-        self.nomeLabel = nomeLabel
-
-    def geraLabel(self):
-        self.contador += 1
-        return f'{self.nomeLabel}_{self.contador}'
-
-class maquina:
+    def geraLabel(self, sigla):
+        if sigla == 'f':
+            self.contador_for += 1
+            return f'inicio_for_{self.contador_for}', f'verdade_for_{self.contador_for}', f'falsidade_for_{self.contador_for}'
+        elif sigla == 'w':
+            self.contador_while += 1
+            return f'inicio_while_{self.contador_while}', f'verdade_while_{self.contador_while}', f'falsidade_while_{self.contador_while}'
+        elif sigla == 'i':
+            self.contador_if += 1
+            return f'verdade_if_{self.contador_if}', f'falsidade_if_{self.contador_if}', f'fim_if_{self.contador_if}'
     
+    def geraVariavelTemp(self):
+        self.contador_var_temp += 1
+        return f'var_temp_{self.contador_var_temp}'
+    
+    def getVariavelTemp(self):
+        return f'var_temp_{self.contador_var_temp}'
+class maquina:
     def __init__(self, lista):
         self.lista = lista
+        self.gerador = gerador()
 
     def getList(self):
         print(self.lista)
@@ -98,7 +111,7 @@ class maquina:
         
         if token == tipo:
             self.lista.pop(0)
-            print(f'{token} consumido!')
+            # print(f'{token} consumido!')
             return True
         else:
             self.erro('token incorreto', tipo, token, atual[2], atual[3])
@@ -106,48 +119,86 @@ class maquina:
 
     def inicia(self):
         # self.getList()
-        self.function()
+        lista_final = []
+
+        lista_final.extend(self.function())
+
+        for item in lista_final:
+            print(item)
+
+        return lista_final
 
     def function(self):
+        lista_function = []
+
         self.consome('tkn_program')
         self.consome('tkn_variavel')
         self.consome('tkn_ponto_virgula')
-        self.declarations()
+        lista_function.extend(self.declarations())
         self.consome('tkn_begin')
-        self.stmtList()
+        lista_function.extend(self.stmtList())
         self.consome('tkn_end')
         self.consome('tkn_ponto')
 
+        return lista_function
+
     def declarations(self):
+        lista_declarations = []
+
         self.consome('tkn_var')
-        self.declaration()
+        lista_declarations.extend(self.declaration())
+
+        return lista_declarations
 
     def declaration(self):
-        self.listaIdent()
+        lista_declaration = []
+
+        variaveis = self.listaIdent()
         self.consome('tkn_dois_pontos')
-        self.tipo()
+        lista_declaration.extend(self.tipo(variaveis))
         self.consome('tkn_ponto_virgula')
-        self.restoDeclaration()
+        lista_declaration.extend(self.restoDeclaration())
+
+        return lista_declaration
 
     def listaIdent(self):
+        lista_listaIdent = []
+
+        lista_listaIdent.append(self.getLexema())
         self.consome('tkn_variavel')
-        self.restoIdentList()
+        lista_listaIdent.extend(self.restoIdentList())
+
+        return lista_listaIdent
 
     def restoIdentList(self):
+        lista_restoIdentList = []
+
         if self.getType() == tipos_tokens['tkn_virgula']:
             self.consome('tkn_virgula')
+            lista_restoIdentList.append(self.getLexema())
             self.consome('tkn_variavel')
-            self.restoIdentList()
+            lista_restoIdentList.extend(self.restoIdentList())
+
+        return lista_restoIdentList
     
-    def tipo(self):
+    def tipo(self, variaveis):
+        lista_tipo = []
+
         if self.getType() == tipos_tokens['tkn_integer']:
             self.consome('tkn_integer')
+            for var in variaveis:
+                lista_tipo.append(('=', var, 0, None))
         elif self.getType() == tipos_tokens['tkn_real']: 
             self.consome('tkn_real')
-        elif self.getType() == tipos_tokens['tkn_string']:
-            self.consome('tkn_string')
+            for var in variaveis:
+                lista_tipo.append(('=', var, 0.0, None))
+        elif self.getType() == tipos_tokens['tkn_tipo_string']:
+            self.consome('tkn_tipo_string')
+            for var in variaveis:
+                lista_tipo.append(('=', var, '', None))
         else:
             atual = self.currentPosition()
+            print(f'atual: {atual}')
             token = ''
             if atual[0] in tipos_tokens.values():
                 for key, value in tipos_tokens.items():
@@ -155,12 +206,17 @@ class maquina:
                         token = key
                         break
                     
-            self.erro('token incorreto', 'tkn_integer, tkn_real ou tkn_string', token, atual[2], atual[3])
+            self.erro('token incorreto', 'tkn_integer, tkn_real ou tkn_tipo_string', token, atual[2], atual[3])
+        return lista_tipo
     
     def restoDeclaration(self):
+        lista_restoDeclaration = []
+
         if self.getType() == tipos_tokens['tkn_variavel']:
-            self.declaration()
-            self.restoDeclaration()
+            lista_restoDeclaration.extend(self.declaration())
+            lista_restoDeclaration.extend(self.restoDeclaration())
+
+        return lista_restoDeclaration
     
     def verificaRecursaoStmtList(self):
         if self.getType() == tipos_tokens['tkn_for'] or self.getType() == tipos_tokens['tkn_read'] or self.getType() == tipos_tokens['tkn_write'] or self.getType() == tipos_tokens['tkn_while'] or self.getType() == tipos_tokens['tkn_variavel'] or self.getType() == tipos_tokens['tkn_if'] or self.getType() == tipos_tokens['tkn_begin'] or self.getType() == tipos_tokens['tkn_break'] or self.getType() == tipos_tokens['tkn_continue'] or self.getType() == tipos_tokens['tkn_ponto_virgula']:
@@ -168,32 +224,43 @@ class maquina:
         
         return False
 
-    def stmtList(self):
-        if self.verificaRecursaoStmtList():
-            self.stmt()
-            self.stmtList()
+    def stmtList(self, labelB = None, labelC = None):
+        lista_stmtList = []
 
-    def stmt(self):
+        if self.verificaRecursaoStmtList():
+            lista_stmtList.extend(self.stmt(labelB, labelC))
+            lista_stmtList.extend(self.stmtList(labelB, labelC))
+        
+        return lista_stmtList
+
+    def stmt(self, labelB = None, labelC = None):
+        lista_stmt = []
+
         if self.getType() == tipos_tokens['tkn_for']:
-            self.forStmt()
+            lista_stmt.extend(self.forStmt())
         elif self.getType() == tipos_tokens['tkn_read'] or self.getType() == tipos_tokens['tkn_write']:
-            self.ioStmt()
+            lista_stmt.extend(self.ioStmt())
         elif self.getType() == tipos_tokens['tkn_while']:
-            self.whileStmt()
+            lista_stmt.extend(self.whileStmt())
         elif self.getType() == tipos_tokens['tkn_variavel']:
-            self.atrib()
+            lista, _ = self.atrib()
+            lista_stmt.extend(lista)
         elif self.getType() == tipos_tokens['tkn_if']:
-            self.ifStmt()
+            lista_stmt.extend(self.ifStmt(labelB, labelC))
         elif self.getType() == tipos_tokens['tkn_begin']:
-            self.bloco()
+            lista_stmt.extend(self.bloco(labelB, labelC))
         elif self.getType() == tipos_tokens['tkn_break']:
+            lista_stmt.append(('jump', labelB, None, None))
             self.consome('tkn_break')
             self.consome('tkn_ponto_virgula')
         elif self.getType() == tipos_tokens['tkn_continue']:
+            lista_stmt.append(('jump', labelC, None, None))
             self.consome('tkn_continue')
             self.consome('tkn_ponto_virgula')
         elif self.getType() == tipos_tokens['tkn_ponto_virgula']:
             self.consome('tkn_ponto_virgula')
+        
+        return lista_stmt
         
     def forStmt(self):
         lista_for = []
@@ -205,31 +272,36 @@ class maquina:
 
         self.consome('tkn_to')
 
-        lista_for.extend(self.endFor(lexema))
+        label1, label2, label3 = self.gerador.geraLabel('f')
+
+        lista_for.append(('label', label1, None, None))
+        extend2, varTemp = self.endFor(lexema)
+        lista_for.extend(extend2)
 
         self.consome('tkn_do')
 
-        lista_for.append(('if', 'geraVarTemp', 'verdade', 'falsidade')) # (if, geravarTemp, geraLabel, geraLabel)
-        lista_for.append(('label', 'geraVarTemp', None, None)) # ("label", "verdade", None, None)
+        lista_for.append(('if', varTemp, label2, label3))
+        lista_for.append(('label', label2, None, None))
 
-        lista_for.extend(self.stmt())
+        lista_for.extend(self.stmt(label3, label1))
 
-        lista_for.append(('label', 'geraVarTemp', None, None)) # ("label", "falsidades", None, None)
+        lista_for.append(('+', lexema, lexema, 1))
+        lista_for.append(('jump', label1, None, None))
+        lista_for.append(('label', label3, None, None))
 
-        print(lista_for)
+        # print(lista_for)
+        return lista_for
 
     def endFor(self, lexema):
         lista_end_for = []
 
-        if self.getType() == tipos_tokens['tkn_variavel']:
+        varTemp = self.gerador.geraVariavelTemp()
 
-            # IMPLEMENTAR VARTEMP
-            lista_end_for.append(('<', 'geraVarTemp', lexema, self.getLexema()))
+        if self.getType() == tipos_tokens['tkn_variavel']:
+            lista_end_for.append(('<', varTemp, lexema, self.getLexema()))
             self.consome('tkn_variavel')
         elif self.getType() == tipos_tokens['tkn_numero_inteiro']:
-
-            # IMPLEMENTAR VARTEMP
-            lista_end_for.append(('<', 'geraVarTemp', lexema, int(self.getLexema())))
+            lista_end_for.append(('<', varTemp, lexema, int(self.getLexema())))
             self.consome('tkn_numero_inteiro')
         else:
             atual = self.currentPosition()
@@ -242,7 +314,7 @@ class maquina:
                     
             self.erro('token incorreto', 'tkn_variavel ou tkn_numero_inteiro', token, atual[2], atual[3])
         
-        return lista_end_for
+        return lista_end_for, varTemp
 
     def ioStmt(self):
         lista_IO = []
@@ -262,18 +334,20 @@ class maquina:
             self.consome('tkn_fecha_parenteses')
             self.consome('tkn_ponto_virgula')
 
-        print(lista_IO)
+        # print(lista_IO)
         return lista_IO
 
     def outlist(self):
         lista_outlist = []
-        lista_outlist.append(self.out())
+
+        lista_outlist.extend(self.out())
         lista_outlist.extend(self.restOutlist())
 
         return lista_outlist
 
     def out(self):
         lista_out = []
+
         if self.getType() == tipos_tokens['tkn_string']:
             lista_out.append(('call', 'print', self.getLexema(), None))
             self.consome('tkn_string')
@@ -301,6 +375,7 @@ class maquina:
     
     def restOutlist(self):
         lista_restoOutList = []
+
         if self.getType() == tipos_tokens['tkn_virgula']:
             self.consome('tkn_virgula')
             lista_restoOutList.extend(self.outlist())
@@ -308,135 +383,305 @@ class maquina:
         return lista_restoOutList
 
     def whileStmt(self):
+        lista_while = []
+
         self.consome('tkn_while')
-        self.expr()
-        self.stmt()
+
+        resultado, extend = self.expr()
+        lista_while.extend(extend)
+
+        label1, label2, label3 = self.gerador.geraLabel('w')
+
+        lista_while.append(('label', label1, None, None))
+
+        varTemp = self.gerador.getVariavelTemp()
+        lista_while.append(('if', varTemp, label2, label3))
+        lista_while.append(('label', label2, None, None)) 
+
         self.consome('tkn_do')
+        lista_while.extend(self.stmt(label3, label1))
+
+        lista_while.append(('+', varTemp, resultado, 1))
+        lista_while.append(('jump', label1, None, None))
+        lista_while.append(('label', label3, None, None))
+
+        return lista_while
 
     def atrib(self):
         lista_atrib = []
 
         lexema_var = self.getLexema()
-        lista_atrib.append(('=', lexema_var, '', ''))
         
         self.consome('tkn_variavel')
         self.consome('tkn_atribuicao')
-        self.expr()
+
+        resultado, extend = self.expr()
+        lista_atrib.extend(extend)
+
+        varTemp = self.gerador.getVariavelTemp()
+        lista_atrib.append(('=', lexema_var, varTemp, None))
 
         return lista_atrib, lexema_var
 
     def expr(self):
-        self.operationOR()
+        lista_expr = []
+        
+        resultado, extend = self.operationOR()
+        lista_expr.extend(extend)
+
+        return resultado, lista_expr
 
     def operationOR(self):
-        self.operationAND()
-        self.restOperationOR()
+        lista_operationOR = []
 
-    def restOperationOR(self):
+        resultado, extend = self.operationAND()
+        lista_operationOR.extend(extend)
+        
+        lista_operationOR.extend(self.restOperationOR(resultado))
+
+        return resultado, lista_operationOR
+
+    def restOperationOR(self, resultant):
+        lista_restOperationOR = []
+
         if self.getType() == tipos_tokens['tkn_or']:
             self.consome('tkn_or')
-            self.operationAND()
-            self.restOperationOR()
+            resultado, extend = self.operationAND()
+            lista_restOperationOR.extend(extend)
+
+            varTemp = self.gerador.geraVariavelTemp()
+            lista_restOperationOR.append(('||', varTemp, resultant, resultado))
+            lista_restOperationOR.extend(self.restOperationOR(varTemp))
+        
+        return lista_restOperationOR
     
     def operationAND(self):
-        self.operationNOT()
-        self.restOperationAND()
+        lista_operationAND = []
 
-    def restOperationAND(self):
+        resultado, extend = self.operationNOT()
+        lista_operationAND.extend(extend)
+        lista_operationAND.extend(self.restOperationAND(resultado))
+
+        return resultado, lista_operationAND
+
+    def restOperationAND(self, resultant):
+        lista_restOperationAND = []
+        
         if self.getType() == tipos_tokens['tkn_and']:
             self.consome('tkn_and')
-            self.operationNOT()
-            self.restOperationAND()
+            resultado, extend = self.operationNOT()
+            lista_restOperationAND.extend(extend)
 
-    def operationNOT(self):
+            varTemp = self.gerador.geraVariavelTemp()
+            lista_restOperationAND.append(('&&', varTemp, resultant, resultado))
+            
+            lista_restOperationAND.extend(self.restOperationAND(varTemp))
+        
+        return lista_restOperationAND
+
+    def operationNOT(self, resultant = None):
+        lista_operationNOT = []
+
         if self.getType() == tipos_tokens['tkn_not']:
             self.consome('tkn_not')
-            self.operationNOT()
+            resultado, extend = self.operationNOT()
+
+            varTemp = self.gerador.geraVariavelTemp()
+            lista_operationNOT.append(('!', varTemp, resultado, None))
         else:
-            self.rel()
+            resultado, extend = self.rel()
+            lista_operationNOT.extend(extend)
+
+        return resultado, lista_operationNOT
 
     def rel(self):
-        self.operationADD()
-        self.restRel()
+        lista_rel = []
 
-    def restRel(self):
+        resultado, extend = self.operationADD()
+        lista_rel.extend(extend)
+        lista_rel.extend(self.restRel(resultado))
+
+        return resultado, lista_rel
+
+    def restRel(self, resultant):
+        lista_restRel = []
+        
         if self.getType() == tipos_tokens['tkn_igual']:
             self.consome('tkn_igual')
-            self.operationADD()
+
+            resultado, extend = self.operationADD()
+            lista_restRel.extend(extend)
+            
+            varTemp = self.gerador.geraVariavelTemp()
+            lista_restRel.append(('==', varTemp, resultant, resultado))
         elif self.getType() == tipos_tokens['tkn_dif']:
             self.consome('tkn_dif')
-            self.operationADD()
+
+            resultado, extend = self.operationADD()
+            lista_restRel.extend(extend)
+            
+            varTemp = self.gerador.geraVariavelTemp()
+            lista_restRel.append(('<>', varTemp, resultant, resultado))
         elif self.getType() == tipos_tokens['tkn_menor']:
             self.consome('tkn_menor')
-            self.operationADD()
+
+            resultado, extend = self.operationADD()
+            lista_restRel.extend(extend)
+            
+            varTemp = self.gerador.geraVariavelTemp()
+            lista_restRel.append(('<', varTemp, resultant, resultado))
         elif self.getType() == tipos_tokens['tkn_menor_igual']:
             self.consome('tkn_menor_igual')
-            self.operationADD()
+            
+            resultado, extend = self.operationADD()
+            lista_restRel.extend(extend)
+            
+            varTemp = self.gerador.geraVariavelTemp()
+            lista_restRel.append(('<=', varTemp, resultant, resultado))
         elif self.getType() == tipos_tokens['tkn_maior']:
             self.consome('tkn_maior')
-            self.operationADD()
+
+            resultado, extend = self.operationADD()
+            lista_restRel.extend(extend)
+            
+            varTemp = self.gerador.geraVariavelTemp()
+            lista_restRel.append(('>', varTemp, resultant, resultado))
         elif self.getType() == tipos_tokens['tkn_maior_igual']:
             self.consome('tkn_maior_igual')
-            self.operationADD()
+            
+            resultado, extend = self.operationADD()
+            lista_restRel.extend(extend)
+            
+            varTemp = self.gerador.geraVariavelTemp()
+            lista_restRel.append(('>=', varTemp, resultant, resultado))
+
+        return lista_restRel
 
     def operationADD(self):
-        self.operationMULT()
-        self.restOperationADD()
+        lista_operationADD = []
 
-    def restOperationADD(self):
+        resultado, extend = self.operationMULT()
+        lista_operationADD.extend(extend)
+        lista_operationADD.extend(self.restOperationADD(resultado))
+
+        return resultado, lista_operationADD
+
+    def restOperationADD(self, resultant):
+        lista_restOperationADD = []
         if self.getType() == tipos_tokens['tkn_add']:
             self.consome('tkn_add')
-            self.operationMULT()
-            self.restOperationADD()
+
+            varTemp = self.gerador.geraVariavelTemp()
+            
+            resultado, extend = self.operationMULT()
+            lista_restOperationADD.extend(extend)
+            lista_restOperationADD.append(('+', varTemp, resultant, resultado))   
+            lista_restOperationADD.extend(self.restOperationADD(varTemp))
         elif self.getType() == tipos_tokens['tkn_sub']:
             self.consome('tkn_sub')
-            self.operationMULT()
-            self.restOperationADD()
+            
+            varTemp = self.gerador.geraVariavelTemp()
+            
+            resultado, extend = self.operationMULT()
+            lista_restOperationADD.extend(extend)
+            lista_restOperationADD.append(('-', varTemp, resultant, resultado))   
+            lista_restOperationADD.extend(self.restOperationADD(varTemp))
+        
+        return lista_restOperationADD
 
     def operationMULT(self):
-        self.uno()
-        self.restOperationMULT()
+        lista_operationMULT = []
 
-    def restOperationMULT(self):
+        resultado, extend = self.uno()
+        lista_operationMULT.extend(extend)
+        lista_operationMULT.extend(self.restOperationMULT(resultado))
+
+        return resultado, lista_operationMULT
+
+    def restOperationMULT(self, resultant):
+        lista_restOperationMULT = []
+
         if self.getType() == tipos_tokens['tkn_mult']:
             self.consome('tkn_mult')
-            self.uno()
-            self.restOperationMULT()
+            resultado, extend = self.uno()
+            lista_restOperationMULT.extend(extend)
+
+            varTemp = self.gerador.geraVariavelTemp()
+            lista_restOperationMULT.append(('*', varTemp, resultant, resultado))
+
+            lista_restOperationMULT.extend(self.restOperationMULT(varTemp))
         elif self.getType() == tipos_tokens['tkn_divisao']:
             self.consome('tkn_divisao')
-            self.uno()
-            self.restOperationMULT()
+            resultado, extend = self.uno()
+            lista_restOperationMULT.extend(extend)
+            
+            varTemp = self.gerador.geraVariavelTemp()
+            lista_restOperationMULT.append(('/', varTemp, resultant, resultado))
+
+            lista_restOperationMULT.extend(self.restOperationMULT(varTemp))
         elif self.getType() == tipos_tokens['tkn_mod']:
             self.consome('tkn_mod')
-            self.uno()
-            self.restOperationMULT()
+            resultado, extend = self.uno()
+            lista_restOperationMULT.extend(extend)
+
+            varTemp = self.gerador.geraVariavelTemp()
+            lista_restOperationMULT.append(('%', varTemp, resultant, resultado))
+            
+            lista_restOperationMULT.extend(self.restOperationMULT(varTemp))
         elif self.getType() == tipos_tokens['tkn_div']:
             self.consome('tkn_div')
-            self.uno()
-            self.restOperationMULT()
+            resultado, extend = self.uno()
+            lista_restOperationMULT.extend(extend)
+
+            varTemp = self.gerador.geraVariavelTemp()
+            lista_restOperationMULT.append(('//', varTemp, resultant, resultado))
+            
+            lista_restOperationMULT.extend(self.restOperationMULT(varTemp))
+        
+        return lista_restOperationMULT
 
     def uno(self):
+        lista_uno = []
+
         if self.getType() == tipos_tokens['tkn_add']:
+            lista_uno.append(self.getLexema())
             self.consome('tkn_add')
-            self.uno()
+            resultado, extend = self.uno()
+            lista_uno.extend(extend)
         elif self.getType() == tipos_tokens['tkn_sub']:
+            lista_uno.append(self.getLexema())
             self.consome('tkn_sub')
-            self.uno()
+            resultado, extend = self.uno()
+            lista_uno.extend(extend)
         else:
-            self.fator()
+            resultado, extend = self.fator()
+            lista_uno.extend(extend)
+
+        return resultado, lista_uno
 
     def fator(self):
+        lista_fator = []
+
         if self.getType() == tipos_tokens['tkn_numero_inteiro']:
+            atual = self.getLexema()
             self.consome('tkn_numero_inteiro')
         elif self.getType() == tipos_tokens['tkn_numero_real']:
+            atual = self.getLexema()
             self.consome('tkn_numero_real')
         elif self.getType() == tipos_tokens['tkn_variavel']:
+
+            atual = self.getLexema()
             self.consome('tkn_variavel')
         elif self.getType() == tipos_tokens['tkn_abre_parenteses']:
             self.consome('tkn_abre_parenteses')
-            self.expr()
+
+            _, extend = self.expr()
+            lista_fator.extend(extend)
+            atual = self.gerador.getVariavelTemp()
+
             self.consome('tkn_fecha_parenteses')
         elif self.getType() == tipos_tokens['tkn_string']:
+            atual = self.getLexema()
             self.consome('tkn_string')
         else:
             atual = self.currentPosition()
@@ -448,26 +693,55 @@ class maquina:
                         break
                     
             self.erro('token incorreto', 'tkn_numero_inteiro, tkn_numero_real, tkn_variavel, (<expr>) ou tkn_string', token, atual[2], atual[3])
+        
+        return atual, lista_fator
 
-    def ifStmt(self):
+    def ifStmt(self, labelB = None, labelC = None):
+        lista_ifStmt = []
+
         self.consome('tkn_if')
-        self.expr()
+        
+        _, extend = self.expr()
+        lista_ifStmt.extend(extend)
+
+        label1, label2, label3 = self.gerador.geraLabel('i')
+
+        varTemp = self.gerador.getVariavelTemp()
+        lista_ifStmt.append(('if', varTemp, label1, label2))
+        lista_ifStmt.append(('label', label1, None, None))
+
         self.consome('tkn_then')
-        self.stmt()
-        self.elsePart()
 
-    def elsePart(self):
+        lista_ifStmt.extend(self.stmt(labelB, labelC))
+
+        lista_ifStmt.extend(self.elsePart(label2, label3))
+
+        return lista_ifStmt
+
+    def elsePart(self, label2, label3):
+        lista_eslePart = []
+
         if self.getType() == tipos_tokens['tkn_else']:
+            lista_eslePart.append(('jump', label3, None, None))
             self.consome('tkn_else')
-            self.stmt()
+            lista_eslePart.append(('label', label2, None, None))
+            lista_eslePart.extend(self.stmt())
+            lista_eslePart.append(('label', label3, None, None))
+        else:
+            lista_eslePart.append(('label', label2, None, None))
 
-    def bloco(self):
+        return lista_eslePart
+
+    def bloco(self, labelB = None, labelC = None):
         lista_bloco = []
         
         self.consome('tkn_begin')
-        self.stmtList()
+        lista_bloco.extend(self.stmtList(labelB, labelC))
         self.consome('tkn_end')
         self.consome('tkn_ponto_virgula')
+
+        # print(lista_bloco)
+        return lista_bloco
 
 if __name__ == '__main__':
     analisador_sintatico = maquina(parser.executar())

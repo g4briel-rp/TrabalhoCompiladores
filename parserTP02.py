@@ -21,7 +21,7 @@ tipos_tokens = {
     'tkn_var': 18,
     'tkn_integer': 19,
     'tkn_real': 20,
-    'tkn_string': 21,
+    'tkn_tipo_string': 21,
     'tkn_begin': 22,
     'tkn_end': 23,
     'tkn_for': 24,
@@ -122,8 +122,8 @@ class maquina:
             self.consome('tkn_integer')
         elif self.getType() == tipos_tokens['tkn_real']: 
             self.consome('tkn_real')
-        elif self.getType() == tipos_tokens['tkn_string']:
-            self.consome('tkn_string')
+        elif self.getType() == tipos_tokens['tkn_tipo_string']:
+            self.consome('tkn_tipo_string')
         else:
             atual = self.currentPosition()
             token = ''
@@ -133,7 +133,7 @@ class maquina:
                         token = key
                         break
                     
-            self.erro('token incorreto', 'tkn_integer, tkn_real ou tkn_string', token, atual[2], atual[3])
+            self.erro('token incorreto', 'tkn_integer, tkn_real ou tkn_tipo_string', token, atual[2], atual[3])
     
     def restoDeclaration(self):
         if self.getType() == tipos_tokens['tkn_variavel']:
@@ -243,8 +243,8 @@ class maquina:
     def whileStmt(self):
         self.consome('tkn_while')
         self.expr()
-        self.stmt()
         self.consome('tkn_do')
+        self.stmt()
 
     def atrib(self):
         self.consome('tkn_variavel')

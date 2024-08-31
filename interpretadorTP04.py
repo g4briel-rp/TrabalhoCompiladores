@@ -368,7 +368,7 @@ if __name__ == '__main__':
             if executa[1] == 'print':
                 # se for string, usar posicao 2
                 # se for variável, usar posicao 3
-                if executa[2]:
+                if executa[2] is not None:
                     print(executa[2])
                 elif executa[3]:
                     if executa[3] in variaveis:

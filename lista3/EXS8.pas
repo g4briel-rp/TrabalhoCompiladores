@@ -44,8 +44,8 @@ begin;
       cont:=cont+1;
       end;
 
- write ("");
- write ("");
- write ("Para encerrar o programa pressione qualquer tecla.");
+write ("");
+write ("");
+write ("Para encerrar o programa pressione qualquer tecla.");
 
 end.

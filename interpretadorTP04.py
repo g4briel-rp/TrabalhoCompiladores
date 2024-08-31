@@ -2,6 +2,7 @@ import codigointermediario
 import trab4
 import trab4.exe1
 import trab4.exe2
+import parserTP03
 
 # unitario - subtração -> inverter sinal | exemplo: -(-5)
 # unitario - adição -> manter sinal | exemplo: +(-5)
@@ -201,7 +202,10 @@ def executaOperacao(instrucao, variaveis):
                     print(f'Operação inválida: {instrucao}')
                     exit()
             else:
-                variaveis[variavel] = operando_2
+                if operando_2 in variaveis:
+                    variaveis[variavel] = variaveis[operando_2]
+                else:
+                    variaveis[variavel] = operando_2
         case '||':
             if existe_variavel_1 and not(existe_variavel_2):
                 if variaveis[operando_1] or operando_2:
@@ -335,8 +339,9 @@ def executaOperacao(instrucao, variaveis):
 if __name__ == '__main__':
     # lista = codigointermediario.programa()
     # lista = trab4.exe1.programa()
-    lista = trab4.exe2.programa()
+    # lista = trab4.exe2.programa()
     # lista = trab4.exe3.programa()
+    lista = parserTP03.main2()
     # print(lista)
 
     labels = {}

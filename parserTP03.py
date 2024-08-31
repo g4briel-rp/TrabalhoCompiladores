@@ -47,6 +47,7 @@ tipos_tokens = {
     'tkn_string': 44,
 }
 
+dic_variavies = {}
 class gerador:
     def __init__(self):
         self.contador_for = 0
@@ -67,6 +68,7 @@ class gerador:
     
     def geraVariavelTemp(self):
         self.contador_var_temp += 1
+        dic_variavies[f'var_temp_{self.contador_var_temp}'] = 'float'
         return f'var_temp_{self.contador_var_temp}'
     
     def getVariavelTemp(self):
@@ -77,8 +79,8 @@ class maquina:
         self.gerador = gerador()
 
     def getList(self):
-        print(self.lista)
-        # return self.lista
+        # print(self.lista)
+        return self.lista
 
     def currentPosition(self):
         return self.lista[0]
@@ -97,6 +99,10 @@ class maquina:
 
     def erro(self, mensagem, tipo, token, linha, coluna):
         print(f'Erro: {mensagem} | era esperado "{tipo}" e foi passado "{token}" | linha {linha}, coluna {coluna}')
+        exit()
+
+    def erroVariavelNaoDeclarada(self, variavel, linha, coluna):
+        print(f'Erro: variável ("{variavel}") não foi declarada | linha {linha}, coluna {coluna}')
         exit()
 
     def consome(self, tipo):
@@ -123,8 +129,13 @@ class maquina:
 
         lista_final.extend(self.function())
 
-        for item in lista_final:
-            print(item)
+        for i in range(self.gerador.contador_var_temp, 0, -1):
+            lista_final.insert(0, ('=', f'var_temp_{i}', 'float', None))
+
+        # for item in lista_final:
+        #     print(item)
+
+        print(f'Analisador Semântico e Geração de Código - OK')
 
         return lista_final
 
@@ -159,6 +170,12 @@ class maquina:
         self.consome('tkn_ponto_virgula')
         lista_declaration.extend(self.restoDeclaration())
 
+        for item in lista_declaration:
+            # print(item)
+            dic_variavies[item[1]] = item[2]
+
+        # print(dic_variavies)
+
         return lista_declaration
 
     def listaIdent(self):
@@ -187,15 +204,15 @@ class maquina:
         if self.getType() == tipos_tokens['tkn_integer']:
             self.consome('tkn_integer')
             for var in variaveis:
-                lista_tipo.append(('=', var, 0, None))
+                lista_tipo.append(('=', var, 'int', None))
         elif self.getType() == tipos_tokens['tkn_real']: 
             self.consome('tkn_real')
             for var in variaveis:
-                lista_tipo.append(('=', var, 0.0, None))
+                lista_tipo.append(('=', var, 'float', None))
         elif self.getType() == tipos_tokens['tkn_tipo_string']:
             self.consome('tkn_tipo_string')
             for var in variaveis:
-                lista_tipo.append(('=', var, '', None))
+                lista_tipo.append(('=', var, 'string', None))
         else:
             atual = self.currentPosition()
             print(f'atual: {atual}')
@@ -298,6 +315,10 @@ class maquina:
         varTemp = self.gerador.geraVariavelTemp()
 
         if self.getType() == tipos_tokens['tkn_variavel']:
+            
+            if self.getLexema() not in dic_variavies.keys():
+                self.erroVariavelNaoDeclarada(self.getLexema(), self.getLinha(), self.getColuna())
+
             lista_end_for.append(('<', varTemp, lexema, self.getLexema()))
             self.consome('tkn_variavel')
         elif self.getType() == tipos_tokens['tkn_numero_inteiro']:
@@ -322,7 +343,11 @@ class maquina:
         if self.getType() == tipos_tokens['tkn_read']:
             self.consome('tkn_read')
             self.consome('tkn_abre_parenteses')
-            lista_IO.append(('call', 'scan', self.getLexema(), ''))
+
+            if self.getLexema() not in dic_variavies.keys():
+                self.erroVariavelNaoDeclarada(self.getLexema(), self.getLinha(), self.getColuna())
+
+            lista_IO.append(('call', 'scan', self.getLexema(), dic_variavies[self.getLexema()]))
             self.consome('tkn_variavel')
             self.consome('tkn_fecha_parenteses')
             self.consome('tkn_ponto_virgula')
@@ -352,6 +377,9 @@ class maquina:
             lista_out.append(('call', 'print', self.getLexema(), None))
             self.consome('tkn_string')
         elif self.getType() == tipos_tokens['tkn_variavel']:
+            if self.getLexema() not in dic_variavies.keys():
+                self.erroVariavelNaoDeclarada(self.getLexema(), self.getLinha(), self.getColuna())
+
             lista_out.append(('call', 'print', None, self.getLexema()))
             self.consome('tkn_variavel')
         elif self.getType() == tipos_tokens['tkn_numero_inteiro']:
@@ -411,6 +439,9 @@ class maquina:
         lista_atrib = []
 
         lexema_var = self.getLexema()
+
+        if lexema_var not in dic_variavies.keys():
+                self.erroVariavelNaoDeclarada(lexema_var, self.getLinha(), self.getColuna())
         
         self.consome('tkn_variavel')
         self.consome('tkn_atribuicao')
@@ -419,7 +450,11 @@ class maquina:
         lista_atrib.extend(extend)
 
         varTemp = self.gerador.getVariavelTemp()
-        lista_atrib.append(('=', lexema_var, varTemp, None))
+
+        if extend:
+            lista_atrib.append(('=', lexema_var, None, varTemp))
+        else:
+            lista_atrib.append(('=', lexema_var, None, resultado))
 
         return lista_atrib, lexema_var
 
@@ -663,14 +698,18 @@ class maquina:
         lista_fator = []
 
         if self.getType() == tipos_tokens['tkn_numero_inteiro']:
-            atual = self.getLexema()
+            atual = int(self.getLexema())
             self.consome('tkn_numero_inteiro')
         elif self.getType() == tipos_tokens['tkn_numero_real']:
-            atual = self.getLexema()
+            atual = float(self.getLexema())
             self.consome('tkn_numero_real')
         elif self.getType() == tipos_tokens['tkn_variavel']:
 
             atual = self.getLexema()
+
+            if atual not in dic_variavies.keys():
+                self.erroVariavelNaoDeclarada(atual, self.getLinha(), self.getColuna())
+
             self.consome('tkn_variavel')
         elif self.getType() == tipos_tokens['tkn_abre_parenteses']:
             self.consome('tkn_abre_parenteses')
@@ -745,4 +784,10 @@ class maquina:
 
 if __name__ == '__main__':
     analisador_sintatico = maquina(parser.executar())
-    analisador_sintatico.inicia()
+    lista = analisador_sintatico.inicia()
+
+
+def main2():
+    analisador_sintatico = maquina(parser.executar())
+    lista = analisador_sintatico.inicia()
+    return lista
